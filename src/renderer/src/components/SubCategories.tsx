@@ -25,12 +25,12 @@ export default function SubCategories({ category, onBack }: Props) {
 
 
   const isSubscribedSubcategory = (subcategoryId: string) => {
-  return subscriptionsData.some(
-    (sub: any) =>
-      sub.subcategoryId?._id === subcategoryId &&
-      sub.status === "active"
-  );
-};
+    return subscriptionsData.some(
+      (sub: any) =>
+        sub.subcategoryId?._id === subcategoryId &&
+        sub.status === "active"
+    );
+  };
 
 
 
@@ -61,6 +61,8 @@ export default function SubCategories({ category, onBack }: Props) {
     addItem,
     // removeItem,
     clearCart,
+    setIsCreatingOrder,
+
   } = useCartStore()
 
 
@@ -96,9 +98,6 @@ export default function SubCategories({ category, onBack }: Props) {
           : sub.monthlyPrice * selectedMonths,
     })
   }
-
-
-
 
 
   const handleAddIndividual = (sub: any) => {
@@ -160,6 +159,7 @@ export default function SubCategories({ category, onBack }: Props) {
           onClick={() => {
             clearCart()
             onBack()
+            setIsCreatingOrder(false)
           }
           }
           className="group flex items-center gap-2 text-white/70 hover:text-white transition-colors"

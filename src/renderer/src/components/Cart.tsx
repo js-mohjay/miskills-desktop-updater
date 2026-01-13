@@ -6,7 +6,7 @@ import { useAuth } from "@/store/auth/useAuthStore"
 import { paymentsService } from "@/services/payments.service"
 import { toast } from "sonner"
 import { useNavigate } from "react-router"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 
 const POLL_INTERVAL = 5000 // 5 sec
 const MAX_DURATION = 5 * 60 * 1000 // 5 minutes
@@ -49,6 +49,16 @@ export default function Cart() {
   /* -------------------------------------------------------------------------- */
   /*                               PAYMENT POLLING                               */
   /* -------------------------------------------------------------------------- */
+
+  useEffect(() => {
+    return () => {
+      if (pollTimerRef.current) {
+        clearInterval(pollTimerRef.current)
+        pollTimerRef.current = null
+      }
+    }
+  }, [])
+
 
   const pollPaymentStatus = async (orderId: string) => {
     const startTime = Date.now()
