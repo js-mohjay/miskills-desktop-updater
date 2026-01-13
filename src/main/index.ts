@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { initAutoUpdater } from './autoUpdater'
+import { createUpdaterWindow, setUpdaterWindow } from './updater'
 
 function createWindow(): void {
   // Create the browser window.
@@ -21,7 +22,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    initAutoUpdater(mainWindow) // ✅ HERE
+    // initAutoUpdater(mainWindow) // ✅ HERE
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -52,10 +53,23 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+   // 🔥 UPDATED: Create updater window FIRST
+  const updaterWindow = createUpdaterWindow()
+  setUpdaterWindow(updaterWindow)
 
-  createWindow()
+  // IPC test
+  // ipcMain.on('ping', () => console.log('pong'))
+
+   // 🔥 UPDATED: Run updater before main window
+  initAutoUpdater({
+    onReadyToLaunch: () => {
+      updaterWindow.close()
+      createWindow()
+    },
+  })
+
+
+  // createWindow()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

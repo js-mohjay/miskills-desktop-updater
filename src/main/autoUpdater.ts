@@ -1,40 +1,59 @@
 import { autoUpdater } from "electron-updater"
-import { BrowserWindow, app } from "electron"
 import log from "electron-log"
+import { sendStatus, sendProgress } from "./updater"
+import { app } from "electron"
 
 autoUpdater.logger = log
 log.transports.file.level = "info"
-autoUpdater.autoDownload = true
-autoUpdater.autoInstallOnAppQuit = true
 
-export function initAutoUpdater(mainWindow: BrowserWindow) {
+autoUpdater.autoDownload = true
+autoUpdater.autoInstallOnAppQuit = false
+
+let updateIsMandatory = false // 🔥 CORE FLAG
+
+export function initAutoUpdater({
+  onReadyToLaunch,
+}: {
+  onReadyToLaunch: () => void
+}) {
   autoUpdater.on("checking-for-update", () => {
-    mainWindow.webContents.send("update:status", "Checking for updates...")
+    sendStatus("Checking for updates…")
   })
 
   autoUpdater.on("update-available", () => {
-    mainWindow.webContents.send("update:status", "Update available. Downloading...")
+    // 🔥 MANDATORY UPDATE TRIGGER
+    updateIsMandatory = true
+    sendStatus("Critical update found. Downloading…")
   })
 
   autoUpdater.on("update-not-available", () => {
-    mainWindow.webContents.send("update:status", "App is up to date.")
+    sendStatus("App is up to date.")
+    setTimeout(onReadyToLaunch, 600)
   })
 
-  autoUpdater.on("download-progress", (progress) => {
-    mainWindow.webContents.send("update:progress", Math.round(progress.percent))
+  autoUpdater.on("download-progress", (p) => {
+    sendProgress(Math.round(p.percent))
   })
 
   autoUpdater.on("update-downloaded", () => {
-    mainWindow.webContents.send("update:status", "Update ready. Restarting...")
+    sendStatus("Installing critical update…")
     setTimeout(() => {
       autoUpdater.quitAndInstall()
-    }, 1500)
+    }, 1200)
   })
 
   autoUpdater.on("error", (err) => {
-    mainWindow.webContents.send("update:error", err.message)
+    log.error(err)
+
+    if (updateIsMandatory) {
+      // 🔥 ENFORCEMENT: app must NOT open
+      sendStatus("Update required. App will close.")
+      setTimeout(() => app.quit(), 2000)
+    } else {
+      sendStatus("Update failed. Launching app…")
+      setTimeout(onReadyToLaunch, 1200)
+    }
   })
 
-  // 🔥 Mandatory: check every app start
   autoUpdater.checkForUpdates()
 }

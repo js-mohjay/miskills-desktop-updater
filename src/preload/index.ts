@@ -1,34 +1,52 @@
-import { contextBridge, ipcRenderer } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from "electron"
+import { electronAPI } from "@electron-toolkit/preload"
 
-// Custom APIs for renderer
+// =======================================================
+// CUSTOM RENDERER API (already existed)
+// =======================================================
 const api = {
   quitApp: () => ipcRenderer.invoke("app:quit"),
 }
 
-// Use `contextBridge` APIs to expose Electron APIs to
-
-contextBridge.exposeInMainWorld("updater", {
+// =======================================================
+// 🔥 UPDATED / NEW: UPDATER IPC API
+// Exposed so updater.html & renderer can listen to updates
+// =======================================================
+const updaterAPI = {
   onStatus: (cb: (msg: string) => void) =>
     ipcRenderer.on("update:status", (_, msg) => cb(msg)),
+
   onProgress: (cb: (p: number) => void) =>
     ipcRenderer.on("update:progress", (_, p) => cb(p)),
-  onError: (cb: (e: string) => void) =>
-    ipcRenderer.on("update:error", (_, e) => cb(e)),
-})
 
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
+  onError: (cb: (err: string) => void) =>
+    ipcRenderer.on("update:error", (_, err) => cb(err)),
+}
+
+// =======================================================
+// CONTEXT ISOLATION SAFE EXPORTS
+// =======================================================
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
+    // 🔥 existing electron-toolkit API
+    contextBridge.exposeInMainWorld("electron", electronAPI)
+
+    // 🔥 existing custom app API
+    contextBridge.exposeInMainWorld("api", api)
+
+    // 🔥 UPDATED: updater communication API
+    contextBridge.exposeInMainWorld("updater", updaterAPI)
   } catch (error) {
-    console.error(error)
+    console.error("Preload expose error:", error)
   }
 } else {
-  // @ts-ignore (define in dts)
+  // =====================================================
+  // FALLBACK (contextIsolation = false)
+  // =====================================================
+  // @ts-ignore
   window.electron = electronAPI
-  // @ts-ignore (define in dts)
+  // @ts-ignore
   window.api = api
+  // @ts-ignore
+  window.updater = updaterAPI
 }

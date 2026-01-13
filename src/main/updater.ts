@@ -3,6 +3,9 @@ import { join } from "path"
 
 let updaterWindow: BrowserWindow | null = null
 
+// ================================
+// CREATE WINDOW
+// ================================
 export function createUpdaterWindow() {
   updaterWindow = new BrowserWindow({
     width: 420,
@@ -29,4 +32,22 @@ export function createUpdaterWindow() {
   })
 
   return updaterWindow
+}
+
+// ================================
+// STORE REFERENCE
+// ================================
+export function setUpdaterWindow(win: BrowserWindow) {
+  updaterWindow = win
+}
+
+// ================================
+// SEND EVENTS
+// ================================
+export function sendStatus(msg: string) {
+  updaterWindow?.webContents.send("update:status", msg)
+}
+
+export function sendProgress(progress: number) {
+  updaterWindow?.webContents.send("update:progress", progress)
 }
