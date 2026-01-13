@@ -2,8 +2,10 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
+  DoorOpen,
   // CreditCard,
   LogOut,
+  MessageCircleQuestionMark,
   Sparkles,
 } from "lucide-react"
 
@@ -46,8 +48,7 @@ import {
 export function NavUser() {
   const { isMobile } = useSidebar()
 
-  const {user, logout} = useAuth()
-
+  const { user, logout } = useAuth()
   let navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -57,6 +58,10 @@ export function NavUser() {
     // navigate("/signin", {replace: true})
   }
 
+
+  const handleExitApp = async () => {
+    await window.api.quitApp()
+  }
 
   return (
     <SidebarMenu>
@@ -105,10 +110,19 @@ export function NavUser() {
             {/*</DropdownMenuGroup>*/}
             {/*<DropdownMenuSeparator />*/}
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => navigate("/account")}>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
+              {user?.role === "student" && (
+                <>
+                  <DropdownMenuItem onClick={() => navigate("/student/profile")}>
+                    <BadgeCheck />
+                    Profile
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem onClick={() => navigate("/student/help-and-support")}>
+                    <MessageCircleQuestionMark />
+                    Help & Support
+                  </DropdownMenuItem>
+                </>
+              )}
               {/*<DropdownMenuItem>*/}
               {/*  <CreditCard />*/}
               {/*  Billing*/}
@@ -119,7 +133,7 @@ export function NavUser() {
               </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-
+            {/* logout */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
@@ -141,7 +155,28 @@ export function NavUser() {
               </AlertDialogContent>
             </AlertDialog>
 
+            {/* exit app */}
 
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <DoorOpen />
+                  Exit App
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Are you sure, you want to Exit the App?
+                  </AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogAction onClick={handleExitApp} className={"text-white! bg-red-500! hover:bg-red-600!"}>Exit to desktop</AlertDialogAction>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
           </DropdownMenuContent>
         </DropdownMenu>

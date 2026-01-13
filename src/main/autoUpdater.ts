@@ -9,6 +9,10 @@ log.transports.file.level = "info"
 autoUpdater.autoDownload = true
 autoUpdater.autoInstallOnAppQuit = false
 
+
+// console.log("isPackaged:", app.isPackaged)
+
+
 let updateIsMandatory = false // 🔥 CORE FLAG
 
 export function initAutoUpdater({
@@ -16,6 +20,14 @@ export function initAutoUpdater({
 }: {
   onReadyToLaunch: () => void
 }) {
+
+
+  if (!app.isPackaged) {
+    sendStatus("Dev mode – skipping updates")
+    setTimeout(onReadyToLaunch, 500)
+    return
+  }
+
   autoUpdater.on("checking-for-update", () => {
     sendStatus("Checking for updates…")
   })

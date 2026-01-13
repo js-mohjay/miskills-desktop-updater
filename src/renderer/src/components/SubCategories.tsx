@@ -7,9 +7,32 @@ import Cart from "@/components/Cart"
 import { categoryService } from "@/services/category.service";
 import { useCartStore } from "@/store/cart/useCartStore"
 import { useState } from "react";
+import { studentService } from "@/services/student.service"
+import { useAuth } from "@/store/auth/useAuthStore"
 
 
 export default function SubCategories({ category, onBack }: Props) {
+
+  const user = useAuth((s) => s.user)
+
+  const { data: subscriptionsData } = useQuery({
+    queryKey: ["subscriptions", user?._id],
+    enabled: !!user,
+    queryFn: async () => {
+      const res = await studentService.getSubscriptions(1, 50)
+      return res.data.data
+    },
+  })
+
+  const isSubscribedSubcategory = (subcategoryId: string) => {
+    return subscriptionsData?.some(
+      (sub: any) =>
+        sub.subcategoryId === subcategoryId &&
+        sub.status === "active"
+    )
+  }
+
+
 
   const [selectedBundle, setSelectedBundle] = useState<{
     id: string | null;
@@ -41,17 +64,7 @@ export default function SubCategories({ category, onBack }: Props) {
   } = useCartStore()
 
 
-  // helpers
-  // const isIndividualInCart = (id: string) =>
-  //   items.some(i => i.type === "INDIVIDUAL" && i._id === id)
-
-  // const getIndividualItem = (id: string) =>
-  //   items.find(i => i.type === "INDIVIDUAL" && i._id === id)
-
   const bundleItem = items.find(i => i.type === "BUNDLE")
-
-  // const isBundleSelected = (id: string) =>
-  //   bundleItem?._id === id
 
   const handleAddBundle = (sub: any) => {
     const isSameBundle = selectedBundle.id === sub._id
@@ -188,64 +201,104 @@ export default function SubCategories({ category, onBack }: Props) {
               </div>
 
               <div className="space-y-6">
-                {data?.bundles?.map((sub: any) => (
-                  <div
-                    key={sub._id}
-                    className="rounded-[8px] border border-white/50 hover:border-violet-500/50 bg-gradient-to-br from-violet-950/60 to-gray-800/60 backdrop-blur-sm  transition-all duration-300 group overflow-hidden"
-                  >
+                {data?.bundles?.map((sub: any) => {
+                  const isSubscribed = isSubscribedSubcategory(sub._id)
+                  return (
+                    <div
+                      key={sub._id}
+                      className="rounded-[8px] border border-white/50 hover:border-violet-500/50 bg-gradient-to-br from-violet-950/60 to-gray-800/60 backdrop-blur-sm  transition-all duration-300 group overflow-hidden"
+                    >
 
-                    <div className="p-6! pb-4">
-                      <div className="flex items-start justify-between gap-4 mb-4">
-                        <h3 className="text-3xl font-bold text-white flex-1">{sub.name}</h3>
-                        <div className="flex gap-2">
-                          {sub?.durationMonths > 0 && (
-                            <>
-                              <span
-                                className="px-3 py-1 rounded-full bg-violet-500/20 border border-violet-500/30 text-base! text-white font-semibold whitespace-nowrap">
-                                {sub.durationMonths} Months
-                              </span>
-                              <span
-                                className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-200 text-base font-semibold flex items-center gap-1">
-                                <Star className="size-3 fill-amber-300" />
-                                Popular
-                              </span>
-                            </>
-                          )}
+                      <div className="p-6! pb-4">
+                        <div className="flex items-start justify-between gap-4 mb-4">
+                          <h3 className="text-3xl font-bold text-white flex-1">{sub.name}</h3>
+                          <div className="flex gap-2">
+                            {sub?.durationMonths > 0 && (
+                              <>
+                                <span
+                                  className="px-3 py-1 rounded-full bg-violet-500/20 border border-violet-500/30 text-base! text-white font-semibold whitespace-nowrap">
+                                  {sub.durationMonths} Months
+                                </span>
+                                <span
+                                  className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-200 text-base font-semibold flex items-center gap-1">
+                                  <Star className="size-3 fill-amber-300" />
+                                  Popular
+                                </span>
+                              </>
+                            )}
+                          </div>
                         </div>
+                        <p className="text-sm text-white/70 leading-relaxed mb-4">{sub.description}</p>
+
+                        {/*<div className="flex items-center gap-6 text-base text-white/60">*/}
+                        {/*  <div className="flex items-center gap-2">*/}
+                        {/*    <Clock className="size-4 text-violet-400" />*/}
+                        {/*    <span>50+ hours</span>*/}
+                        {/*  </div>*/}
+                        {/*  <div className="flex items-center gap-2">*/}
+                        {/*    <Users className="size-4 text-violet-400" />*/}
+                        {/*    <span>1,200+ enrolled</span>*/}
+                        {/*  </div>*/}
+                        {/*</div>*/}
+
+
                       </div>
-                      <p className="text-sm text-white/70 leading-relaxed mb-4">{sub.description}</p>
 
-                      {/*<div className="flex items-center gap-6 text-base text-white/60">*/}
-                      {/*  <div className="flex items-center gap-2">*/}
-                      {/*    <Clock className="size-4 text-violet-400" />*/}
-                      {/*    <span>50+ hours</span>*/}
-                      {/*  </div>*/}
-                      {/*  <div className="flex items-center gap-2">*/}
-                      {/*    <Users className="size-4 text-violet-400" />*/}
-                      {/*    <span>1,200+ enrolled</span>*/}
-                      {/*  </div>*/}
-                      {/*</div>*/}
+                      <hr className="line opacity-20" />
+
+                      <div className="grid grid-cols-2 gap-x-6 gap-y-3 py-4 px-6">
+                        {sub?.benefits?.map((benefit: string, index: number) => (
+                          <div key={index} className="flex gap-3 items-start">
+                            <CircleCheck className="size-5 text-violet-400 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm text-white/90 leading-relaxed">{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <hr className="line opacity-20" />
+
+                      <div className="p-6! flex items-center gap-4">
+
+                        {/* MONTHLY OPTION (only if available) */}
+                        {sub.billingType === "MONTHLY" && sub.monthlyPrice && (
+                          <label
+                            className="flex-1 flex items-center justify-between px-5 py-2 border-2 border-purple-700/50 bg-gradient-to-r from-purple-900/40 to-purple-800/30 hover:border-purple-600 hover:from-purple-900/60 hover:to-purple-800/50 cursor-pointer has-[:checked]:border-violet-100 has-[:checked]:from-violet-600/30 has-[:checked]:to-violet-700/30 has-[:checked]:shadow-lg has-[:checked]:shadow-violet-500/20 rounded-[8px]! transition-all duration-200"
+                          >
+                            <div className="flex items-center gap-3">
+                              <input
+                                type="radio"
+                                name={`bundle-${sub._id}`}
+                                className="w-4 h-4 accent-violet-500 cursor-pointer"
+
+                                disabled={isSubscribed ?? false}
+
+                                checked={
+                                  selectedBundle.id === sub._id &&
+                                  selectedBundle?.subscriptionMode === "MONTHLY"
+                                }
+
+                                onChange={() =>
+                                  setSelectedBundle({
+                                    id: sub._id,
+                                    subscriptionMode: "MONTHLY",
+                                    selectedMonths: 1,
+                                  })
+                                }
 
 
-                    </div>
+                              />
+                              <span className="text-base font-medium text-white">Monthly Payment</span>
+                            </div>
 
-                    <hr className="line opacity-20" />
+                            <div className="flex items-baseline gap-2 flex-wrap">
+                              <span className="text-lg font-bold text-violet-300">
+                                ₹ {sub.monthlyPrice.toLocaleString("en-IN")}
+                              </span>
+                            </div>
+                          </label>
+                        )}
 
-                    <div className="grid grid-cols-2 gap-x-6 gap-y-3 py-4 px-6">
-                      {sub?.benefits?.map((benefit: string, index: number) => (
-                        <div key={index} className="flex gap-3 items-start">
-                          <CircleCheck className="size-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-white/90 leading-relaxed">{benefit}</span>
-                        </div>
-                      ))}
-                    </div>
 
-                    <hr className="line opacity-20" />
-
-                    <div className="p-6! flex items-center gap-4">
-
-                      {/* MONTHLY OPTION (only if available) */}
-                      {sub.billingType === "MONTHLY" && sub.monthlyPrice && (
                         <label
                           className="flex-1 flex items-center justify-between px-5 py-2 border-2 border-purple-700/50 bg-gradient-to-r from-purple-900/40 to-purple-800/30 hover:border-purple-600 hover:from-purple-900/60 hover:to-purple-800/50 cursor-pointer has-[:checked]:border-violet-100 has-[:checked]:from-violet-600/30 has-[:checked]:to-violet-700/30 has-[:checked]:shadow-lg has-[:checked]:shadow-violet-500/20 rounded-[8px]! transition-all duration-200"
                         >
@@ -254,90 +307,69 @@ export default function SubCategories({ category, onBack }: Props) {
                               type="radio"
                               name={`bundle-${sub._id}`}
                               className="w-4 h-4 accent-violet-500 cursor-pointer"
+                              id={`bundle-${sub._id}`}
+
+                              disabled={isSubscribed ?? false}
+
                               checked={
                                 selectedBundle.id === sub._id &&
-                                selectedBundle?.subscriptionMode === "MONTHLY"
+                                selectedBundle?.subscriptionMode === "FULL"
                               }
+
                               onChange={() =>
                                 setSelectedBundle({
                                   id: sub._id,
-                                  subscriptionMode: "MONTHLY",
-                                  selectedMonths: 1,
+                                  subscriptionMode: "FULL",
+                                  selectedMonths: sub.durationMonths,
                                 })
                               }
 
 
                             />
-                            <span className="text-base font-medium text-white">Monthly Payment</span>
+                            <span className="text-base font-medium text-white">Full Payment</span>
                           </div>
-
                           <div className="flex items-baseline gap-2 flex-wrap">
                             <span className="text-lg font-bold text-violet-300">
-                              ₹ {sub.monthlyPrice.toLocaleString("en-IN")}
+                              ₹ {sub.totalPrice.toLocaleString("en-IN")}
                             </span>
                           </div>
                         </label>
-                      )}
 
+                        <button
+                          onClick={() => {
+                            console.log(selectedBundle.id, sub._id, selectedBundle.selectedMonths, selectedBundle.subscriptionMode)
 
-                      <label
-                        className="flex-1 flex items-center justify-between px-5 py-2 border-2 border-purple-700/50 bg-gradient-to-r from-purple-900/40 to-purple-800/30 hover:border-purple-600 hover:from-purple-900/60 hover:to-purple-800/50 cursor-pointer has-[:checked]:border-violet-100 has-[:checked]:from-violet-600/30 has-[:checked]:to-violet-700/30 has-[:checked]:shadow-lg has-[:checked]:shadow-violet-500/20 rounded-[8px]! transition-all duration-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="radio"
-                            name={`bundle-${sub._id}`}
-                            className="w-4 h-4 accent-violet-500 cursor-pointer"
-                            id={`bundle-${sub._id}`}
-                            checked={
-                              selectedBundle.id === sub._id &&
-                              selectedBundle?.subscriptionMode === "FULL"
+                            if (isSubscribed) {
+                              toast.info("Plan already subscribed.")
+                              return
                             }
 
-                            onChange={() =>
-                              setSelectedBundle({
-                                id: sub._id,
-                                subscriptionMode: "FULL",
-                                selectedMonths: sub.durationMonths,
-                              })
+                            if (selectedBundle.id !== sub._id) {
+                              toast.error("Please select a payment option first")
+                              return
                             }
 
-
-                          />
-                          <span className="text-base font-medium text-white">Full Payment</span>
-                        </div>
-                        <div className="flex items-baseline gap-2 flex-wrap">
-                          <span className="text-lg font-bold text-violet-300">
-                            ₹ {sub.totalPrice.toLocaleString("en-IN")}
+                            handleAddBundle(sub)
+                          }}
+                          className={`
+                            btn-primary h-full! whitespace-nowrap transition-all duration-200
+                          ${isSubscribed ? "bg-gray-500! hover:bg-gray-600! cursor-not-allowed" : selectedBundle.id !== sub._id
+                              ? "bg-gray-500! cursor-not-allowed"
+                              : "hover:shadow-lg hover:shadow-violet-500/30"
+                            }
+                          `}
+                        >
+                          <span className="px-5! py-2! max-h-[98%]">
+                            {isSubscribed ? "Subscribed" : isInCart(sub._id) ? "Selected" : "Add to Cart"}
                           </span>
-                        </div>
-                      </label>
-
-                      <button
-                        onClick={() => {
-                          console.log(selectedBundle.id, sub._id, selectedBundle.selectedMonths, selectedBundle.subscriptionMode)
-
-                          if (selectedBundle.id !== sub._id) {
-                            toast.error("Please select a payment option first")
-                            return
-                          }
-                          handleAddBundle(sub)
-                        }}
-                        className={`
-                          btn-primary h-full! whitespace-nowrap transition-all duration-200
-                        ${selectedBundle.id !== sub._id
-                            ? "bg-gray-500! cursor-not-allowed"
-                            : "hover:shadow-lg hover:shadow-violet-500/30"
-                          }
-                        `}
-                      >
-                        <span className="px-5! py-2! max-h-[98%]">{isInCart(sub._id) ? "Selected" : "Add to Cart"}</span>
-                      </button>
+                        </button>
 
 
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                }
+                )}
               </div>
             </>
           )}
@@ -356,36 +388,81 @@ export default function SubCategories({ category, onBack }: Props) {
               </div>
 
               <div className="grid grid-cols-2 gap-6">
-                {data?.individualCourses?.map((sub: any) => (
-                  <div
-                    key={sub._id}
-                    className="flex flex-col gap-4! rounded-[8px] border border-white/50 hover:border-violet-500/50 bg-gradient-to-br from-violet-950/60 to-gray-800/60 backdrop-blur-sm  transition-all duration-300 group overflow-hidden p-6!"
-                  >
-                    <div>
-                      <h3 className="text-2xl font-bold text-center mb-3 text-white">{sub.name}</h3>
-                      <p className="text-sm text-white/70 text-center leading-relaxed">{sub.description}</p>
-                    </div>
+                {data?.individualCourses?.map((sub: any) => {
 
-                    <hr className="line opacity-20" />
+                  const isSubscribed = isSubscribedSubcategory(sub._id)
 
-                    <div className="flex flex-col gap-3 py-4 px-6 flex-grow">
-                      {sub?.benefits?.map((benefit: string, index: number) => (
-                        <div key={index} className="flex gap-3 items-start">
-                          <CircleCheck className="size-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-white/90 leading-relaxed">{benefit}</span>
-                        </div>
-                      ))}
-                    </div>
+                  return (
+                    <div
+                      key={sub._id}
+                      className="flex flex-col gap-4! rounded-[8px] border border-white/50 hover:border-violet-500/50 bg-gradient-to-br from-violet-950/60 to-gray-800/60 backdrop-blur-sm  transition-all duration-300 group overflow-hidden p-6!"
+                    >
+                      <div>
+                        <h3 className="text-2xl font-bold text-center mb-3 text-white">{sub.name}</h3>
+                        <p className="text-sm text-white/70 text-center leading-relaxed">{sub.description}</p>
+                      </div>
 
-                    <hr className="line opacity-20" />
+                      <hr className="line opacity-20" />
 
-                    <div>
-                      <legend className="text-base font-semibold text-violet-200 mb-2!">
-                        Choose your Payment Plan
-                      </legend>
+                      <div className="flex flex-col gap-3 py-4 px-6 flex-grow">
+                        {sub?.benefits?.map((benefit: string, index: number) => (
+                          <div key={index} className="flex gap-3 items-start">
+                            <CircleCheck className="size-5 text-violet-400 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm text-white/90 leading-relaxed">{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
 
-                      {/* MONTHLY OPTION (only if available) */}
-                      {sub.billingType === "MONTHLY" && sub.monthlyPrice && (
+                      <hr className="line opacity-20" />
+
+                      <div>
+                        <legend className="text-base font-semibold text-violet-200 mb-2!">
+                          Choose your Payment Plan
+                        </legend>
+
+                        {/* MONTHLY OPTION (only if available) */}
+                        {sub.billingType === "MONTHLY" && sub.monthlyPrice && (
+                          <label
+                            className="flex-1 flex items-center justify-between px-5 py-2 border-2 border-purple-700/50 bg-gradient-to-r from-purple-900/40 to-purple-800/30 hover:border-purple-600 hover:from-purple-900/60 hover:to-purple-800/50 cursor-pointer has-[:checked]:border-violet-100 has-[:checked]:from-violet-600/30 has-[:checked]:to-violet-700/30 has-[:checked]:shadow-lg has-[:checked]:shadow-violet-500/20 rounded-[8px]! transition-all duration-200 mb-2!"
+                          >
+                            <div className="flex items-center gap-3">
+                              <input
+                                type="radio"
+                                name={`individualCourse-${sub._id}`}
+                                className="w-4 h-4 accent-violet-500 cursor-pointer"
+
+                                disabled={isSubscribed ?? false}
+
+                                checked={
+                                  getSelectedIndividual(sub._id)?.subscriptionMode === "MONTHLY"
+                                }
+                                onChange={() => {
+                                  setSelectedIndividuals(prev => [
+                                    ...prev.filter(i => i.id !== sub._id),
+                                    {
+                                      id: sub._id,
+                                      subscriptionMode: "MONTHLY",
+                                      selectedMonths: 1,
+                                    },
+                                  ])
+                                }}
+
+
+                              />
+                              <span className="text-base font-medium text-white">Monthly Payment</span>
+                            </div>
+
+                            <div className="flex items-baseline gap-2 flex-wrap">
+                              {/* <span className="text-base font-semibold text-white">1 Month</span>
+                              <span className="text-white/50">•</span> */}
+                              <span className="text-lg font-bold text-violet-300">
+                                ₹ {sub.monthlyPrice.toLocaleString("en-IN")}
+                              </span>
+                            </div>
+                          </label>
+                        )}
+
+
                         <label
                           className="flex-1 flex items-center justify-between px-5 py-2 border-2 border-purple-700/50 bg-gradient-to-r from-purple-900/40 to-purple-800/30 hover:border-purple-600 hover:from-purple-900/60 hover:to-purple-800/50 cursor-pointer has-[:checked]:border-violet-100 has-[:checked]:from-violet-600/30 has-[:checked]:to-violet-700/30 has-[:checked]:shadow-lg has-[:checked]:shadow-violet-500/20 rounded-[8px]! transition-all duration-200 mb-2!"
                         >
@@ -394,97 +471,70 @@ export default function SubCategories({ category, onBack }: Props) {
                               type="radio"
                               name={`individualCourse-${sub._id}`}
                               className="w-4 h-4 accent-violet-500 cursor-pointer"
+                              id={sub._id}
+
+                              disabled={isSubscribed ?? false}
+
                               checked={
-                                getSelectedIndividual(sub._id)?.subscriptionMode === "MONTHLY"
+                                getSelectedIndividual(sub._id)?.subscriptionMode === "FULL"
                               }
                               onChange={() => {
                                 setSelectedIndividuals(prev => [
                                   ...prev.filter(i => i.id !== sub._id),
                                   {
                                     id: sub._id,
-                                    subscriptionMode: "MONTHLY",
-                                    selectedMonths: 1,
+                                    subscriptionMode: "FULL",
+                                    selectedMonths: sub.durationMonths,
                                   },
                                 ])
                               }}
 
 
                             />
-                            <span className="text-base font-medium text-white">Monthly Payment</span>
-                          </div>
+                            <span className="text-base font-medium text-white">{sub.durationMonths} Months</span>
 
+                          </div>
                           <div className="flex items-baseline gap-2 flex-wrap">
-                            {/* <span className="text-base font-semibold text-white">1 Month</span>
+                            {/* <span className="text-base font-semibold text-white">{sub.durationMonths} Months</span>
                             <span className="text-white/50">•</span> */}
                             <span className="text-lg font-bold text-violet-300">
-                              ₹ {sub.monthlyPrice.toLocaleString("en-IN")}
+                              ₹ {sub.totalPrice.toLocaleString("en-IN")}
                             </span>
                           </div>
                         </label>
-                      )}
+                      </div>
 
 
-                      <label
-                        className="flex-1 flex items-center justify-between px-5 py-2 border-2 border-purple-700/50 bg-gradient-to-r from-purple-900/40 to-purple-800/30 hover:border-purple-600 hover:from-purple-900/60 hover:to-purple-800/50 cursor-pointer has-[:checked]:border-violet-100 has-[:checked]:from-violet-600/30 has-[:checked]:to-violet-700/30 has-[:checked]:shadow-lg has-[:checked]:shadow-violet-500/20 rounded-[8px]! transition-all duration-200 mb-2!"
+                      <button
+                        onClick={() => {
+
+                          if (isSubscribed) {
+                            toast.info("Plan already subscribed.")
+                            return
+                          }
+
+                          if (!isIndividualSelected(sub._id)) {
+                            toast.error("Please select a payment option first")
+                            return
+                          }
+                          handleAddIndividual(sub)
+                        }}
+                        className={`btn-primary w-full rounded-xl py-3 font-semibold transition-all duration-200 mt-auto
+                          ${isSubscribed ? "bg-gray-500! hover:bg-gray-600! cursor-not-allowed" : !isIndividualSelected(sub._id)
+                            ? "bg-gray-500! cursor-not-allowed!"
+                            : "bg-gradient-to-r from-violet-600/80 to-purple-600/80 hover:from-violet-500 hover:to-purple-500 hover:shadow-lg hover:shadow-violet-500/20"
+                          }
+                        `}
                       >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="radio"
-                            name={`individualCourse-${sub._id}`}
-                            className="w-4 h-4 accent-violet-500 cursor-pointer"
-                            id={sub._id}
-                            checked={
-                              getSelectedIndividual(sub._id)?.subscriptionMode === "FULL"
-                            }
-                            onChange={() => {
-                              setSelectedIndividuals(prev => [
-                                ...prev.filter(i => i.id !== sub._id),
-                                {
-                                  id: sub._id,
-                                  subscriptionMode: "FULL",
-                                  selectedMonths: sub.durationMonths,
-                                },
-                              ])
-                            }}
+                        <span>{isSubscribed ? "Subscribed" : isInCart(sub._id) ? "Selected" : "Select Plan"}</span>
+                      </button>
 
 
-                          />
-                          <span className="text-base font-medium text-white">{sub.durationMonths} Months</span>
-
-                        </div>
-                        <div className="flex items-baseline gap-2 flex-wrap">
-                          {/* <span className="text-base font-semibold text-white">{sub.durationMonths} Months</span>
-                          <span className="text-white/50">•</span> */}
-                          <span className="text-lg font-bold text-violet-300">
-                            ₹ {sub.totalPrice.toLocaleString("en-IN")}
-                          </span>
-                        </div>
-                      </label>
                     </div>
 
-
-                    <button
-                      onClick={() => {
-                        if (!isIndividualSelected(sub._id)) {
-                          toast.error("Please select a payment option first")
-                          return
-                        }
-                        handleAddIndividual(sub)
-                      }}
-                      className={`btn-primary w-full rounded-xl py-3 font-semibold transition-all duration-200 mt-auto
-                        ${!isIndividualSelected(sub._id)
-                          ? "bg-gray-500! cursor-not-allowed!"
-                          : "bg-gradient-to-r from-violet-600/80 to-purple-600/80 hover:from-violet-500 hover:to-purple-500 hover:shadow-lg hover:shadow-violet-500/20"
-                        }
-                      `}
-                    >
-                      <span>{isInCart(sub._id) ? "Selected" : "Select Plan"}</span>
-                    </button>
-
-
-                  </div>
-
-                ))}
+                  )
+                }
+                )}
               </div>
             </>
           )}

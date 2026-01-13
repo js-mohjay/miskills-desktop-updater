@@ -1,3 +1,4 @@
+import { UpdateProfilePayload } from "@/types/user";
 import api from "../lib/axios"
 
 export type onboardPayload = {
@@ -9,14 +10,19 @@ export type onboardPayload = {
   dob: string;
   city: string;
   state: string,
-  otp ?: string
+  otp?: string
 }
 
 export const userService = {
   getProfile: () => {
     return api.get("/api/user/profile");
   },
+  
   setCollege: (payload: onboardPayload) => {
     return api.post("/api/user/set-college", payload);
-  }
+  },
+
+  updateProfile: (payload: UpdateProfilePayload) =>
+    api.patch("/api/user/profile", payload),
+
 }

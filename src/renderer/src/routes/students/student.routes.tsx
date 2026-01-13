@@ -8,6 +8,7 @@ import Profile from "@/pages/student/Profile"
 // import StudentMeetingRoom from "@/pages/meeting/MeetingRoom";
 import LearningDetails from "@/pages/student/Learning/LearningDetails"
 import StudentMeetings from "@/pages/student/StudentMeetings"
+import HelpSupport from "@/pages/student/HelpSupport"
 
 export const studentRoutes = {
   path: "student",
@@ -23,6 +24,7 @@ export const studentRoutes = {
     { path: "placements", Component: Placements },
     { path: "profile", Component: Profile },
     { path: "meetings", Component: StudentMeetings },
-    // { path: "meetings/room", Component: StudentMeetingRoom }
+
+    { path: "help-and-support", Component: HelpSupport }
   ],
 };

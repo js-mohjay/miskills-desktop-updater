@@ -20,9 +20,11 @@ export default function Career() {
     queryFn: () => careerService.getPlacements().then(res => res.data),
   })
 
+  // console.log(interviews.data?.data)
+
   return (
     <div className="w-full p-10 space-y-6!">
-      <h1 className="text-5xl mb-4">
+      <h1 className="text-5xl mb-4!">
         Our Interviews & Placements
       </h1>
       {/* Tabs */}
@@ -31,7 +33,7 @@ export default function Career() {
           <button
             key={t}
             onClick={() => setTab(t as any)}
-            className={`px-4 py-2 rounded-[8px] text-sm font-medium transition
+            className={`px-6 py-2 rounded-[8px] text-xl! font-medium transition cursor-pointer
               ${tab === t
                 ? "bg-violet-600 text-white"
                 : "bg-zinc-800 text-white/70 hover:bg-zinc-700"
@@ -45,17 +47,25 @@ export default function Career() {
       {/* Content */}
       {tab === "interviews" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {interviews.data?.data?.map((i: any, idx: number) => (
+          {interviews.data?.data && Array.isArray(interviews.data?.data) && interviews.data?.data.length > 0 ? interviews.data?.data?.map((i: any, idx: number) => (
             <InterviewCard key={idx} data={i} />
-          ))}
+          )) : (
+            <div>
+              No Interview data available.
+            </div>
+          )}
         </div>
       )}
 
       {tab === "placements" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {placements.data?.data?.map((p: any, idx: number) => (
+          {placements.data?.data && Array.isArray(placements.data?.data) && placements.data?.data.length > 0 ? placements.data?.data?.map((p: any, idx: number) => (
             <PlacementCard key={idx} data={p} />
-          ))}
+          )) : (
+            <div>
+              No Placements data available.
+            </div>
+          )}
         </div>
       )}
     </div>
