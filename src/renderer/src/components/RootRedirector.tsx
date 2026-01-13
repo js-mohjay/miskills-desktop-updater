@@ -5,45 +5,42 @@ import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { studentService } from "@/services/student.service";
 import { toast } from "sonner";
-
-type Subscription = {
-  _id: string;
-  status: "active" | "expired" | "cancelled";
-  startDate: string;
-  endDate: string;
-};
+import { StudentSubscription } from "@/types/subscription";
 
 export default function RootRedirect() {
   const user = useAuth((s) => s.user);
   const rehydrated = useAuth((s) => s.rehydrated);
 
   const {
-    data: subscriptions,
+    data: subscriptions = [],
     error,
     isLoading,
-  } = useQuery<Subscription[], AxiosError>({
-    queryKey: ["subscriptions", user?._id],
+  } = useQuery({
+    // 🔒 ISOLATED KEY — array-only forever
+    queryKey: ["student-subscriptions-array", user?._id],
     enabled: rehydrated && user?.role === "student",
-    queryFn: async () => {
-      const res = await studentService.getSubscriptions(1, 50);
-      return res.data.data;
-    },
+
+    queryFn: () => studentService.getSubscriptions(1, 50),
+
+    // 🔒 ENFORCE ARRAY SHAPE NO MATTER WHAT
+    select: (res) =>
+      Array.isArray(res.data?.data)
+        ? (res.data.data as StudentSubscription[])
+        : [],
   });
 
   useEffect(() => {
     if (error) {
-      const err = error as AxiosError<any>
-
+      const err = error as AxiosError<any>;
       toast.error(
         err.response?.data?.message ??
-        "Failed to get subscriptions. Please try again."
+          "Failed to get subscriptions. Please try again."
       );
     }
   }, [error]);
 
-  // ⛔ wait until auth + subs are resolved
+  // ⛔ wait until auth is rehydrated
   if (!rehydrated) return null;
-  if (user?.role === "student" && isLoading) return null;
 
   if (!user) {
     return <Navigate to="/signin" replace />;
@@ -51,18 +48,25 @@ export default function RootRedirect() {
 
   switch (user.role) {
     case "student": {
-      const hasActiveSubscription = subscriptions?.some(
+      if (isLoading) return null;
+
+      // ✅ SAFE: subscriptions is GUARANTEED array
+      const hasActiveSubscription = subscriptions.some(
         (sub) => sub.status === "active"
       );
 
       // ❌ no active subscription → plans
       if (user.studentId && !hasActiveSubscription) {
-        return <Navigate to="/student" replace />;
+        return <Navigate to="/plans" replace />;
       }
 
-      // ✅ active subscription
-      const route = user.studentId ? "/student" : "/onboard";
-      return <Navigate to={route} replace />;
+      // ✅ active subscription or onboarding
+      return (
+        <Navigate
+          to={user.studentId ? "/student" : "/onboard"}
+          replace
+        />
+      );
     }
 
     case "admin":

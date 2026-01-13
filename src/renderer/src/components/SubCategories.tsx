@@ -15,22 +15,22 @@ export default function SubCategories({ category, onBack }: Props) {
 
   const user = useAuth((s) => s.user)
 
-  const { data: subscriptionsData } = useQuery({
-    queryKey: ["subscriptions", user?._id],
+  const { data: subscriptionsData = [] } = useQuery({
+    queryKey: ["student-subscriptions-array", user?._id],
     enabled: !!user,
-    queryFn: async () => {
-      const res = await studentService.getSubscriptions(1, 50)
-      return res.data.data
-    },
-  })
+    queryFn: () => studentService.getSubscriptions(1, 50),
+    select: (res) => Array.isArray(res.data?.data) ? res.data.data : [],
+  });
+
+
 
   const isSubscribedSubcategory = (subcategoryId: string) => {
-    return subscriptionsData?.some(
-      (sub: any) =>
-        sub.subcategoryId === subcategoryId &&
-        sub.status === "active"
-    )
-  }
+  return subscriptionsData.some(
+    (sub: any) =>
+      sub.subcategoryId?._id === subcategoryId &&
+      sub.status === "active"
+  );
+};
 
 
 

@@ -1,6 +1,5 @@
 import { CareerSupportSummary } from "./careerSupport";
-import { Subscription } from "./subscription";
-
+import { StudentSubscription } from "./subscription";
 
 export interface StudentDashboardResponse {
   success: boolean;
@@ -12,6 +11,6 @@ export interface StudentDashboardResponse {
       totalTimeFormatted: string;
       careerSupport?: CareerSupportSummary;
     };
-    subscriptions: Subscription[];
+    subscriptions: StudentSubscription[];
   };
 }

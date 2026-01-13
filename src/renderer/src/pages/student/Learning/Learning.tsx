@@ -142,7 +142,7 @@ const Learning = () => {
                       <div className="w-full grid grid-rows-3">
                         {/* Header */}
                         <div className="row-span-1 border-b-2 border-white/40 p-4 px-10 pr-10.5! flex justify-between items-center">
-                          <h2 className="text-3xl text-white">
+                          <h2 className="text-xl 2xl:text-3xl text-white">
                             <strong className="font-semibold!">
                               Course :
                             </strong>{" "}
@@ -158,10 +158,10 @@ const Learning = () => {
                         {/* Body */}
                         <div className="row-span-2 w-full px-10 py-4 flex justify-center items-center">
                           <div className="grid grid-cols-3 w-full">
-                            <div className="col-span-2 flex gap-10">
+                            <div className="col-span-2 flex flex-wrap gap-6 2xl:gap-10">
                               <div className="flex flex-col gap-1 items-center justify-center">
                                 <Calendar className="size-7" />
-                                <p className="text-xl">
+                                <p className="text-base 2xl:text-xl">
                                   {durationDays} Days
                                 </p>
                                 <p className="text-sm">Duration</p>
@@ -169,7 +169,7 @@ const Learning = () => {
 
                               <div className="flex flex-col gap-1 items-center justify-center">
                                 <Clock8 className="size-7" />
-                                <p className="text-xl">
+                                <p className="text-base 2xl:text-xl">
                                   {learning.dailyHours} h / day
                                 </p>
                                 <p className="text-sm">Daily Time</p>
@@ -177,28 +177,32 @@ const Learning = () => {
 
                               <div className="flex flex-col gap-1 items-center justify-center">
                                 <ChartNoAxesCombined className="size-7" />
-                                <p className="text-xl">0%</p>
+                                <p className="text-base 2xl:text-xl">0%</p>
                                 <p className="text-sm">Completed</p>
                               </div>
+                              <div className="min-w-1/2 flex gap-6">
+                                {/* starts and ends */}
+                                <div className="flex 2xl:flex-col gap-1 2xl:justify-center">
+                                  <p className="text-base 2xl:text-lg">Starts:</p>
+                                  <p className="text-base 2xl:text-xl">
+                                    {formatDate(learning.startDate)}
+                                  </p>
+                                </div>
 
-                              <div className="flex flex-col gap-1 justify-center">
-                                <span className="text-lg">Starts</span>
-                                <p className="text-xl">
-                                  {formatDate(learning.startDate)}
-                                </p>
+                                <div className="flex 2xl:flex-col gap-1 2xl:justify-center">
+                                  <p className="text-base 2xl:text-lg">Ends:</p>
+                                  <p className="text-base 2xl:text-xl">
+                                    {formatDate(learning.endDate)}
+                                  </p>
+                                </div>
                               </div>
 
-                              <div className="flex flex-col gap-1 justify-center">
-                                <span className="text-lg">Ends</span>
-                                <p className="text-xl">
-                                  {formatDate(learning.endDate)}
-                                </p>
-                              </div>
+
                             </div>
 
                             <div className="col-span-1 flex justify-center items-center">
                               <button
-                                className="btn-primary w-full"
+                                className="btn-primary w-fit!"
                                 onClick={() =>
                                   navigate(`/student/learning/${learning.subcategoryId}`, {
                                     state: { subscriptionId: learning.id },

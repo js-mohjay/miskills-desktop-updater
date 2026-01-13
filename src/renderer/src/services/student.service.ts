@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { Subscription } from "@/types/subscription";
+import { StudentSubscription } from "@/types/subscription";
 import { StudentDashboardResponse } from "@/types/student.dashboard";
 import { CareerSupportApplication } from "@/types/careerSupport";
 import { PaginatedResponse } from "@/types/api";
@@ -12,7 +12,7 @@ export const studentService = {
   getSubscriptions: (page = 1, limit = 50) => {
     return api.get<{
       success: boolean;
-      data: Subscription[];
+      data: StudentSubscription[];
       careerSupportPurchased?: boolean;
     }>(`/api/student/subscription?page=${page}&limit=${limit}`);
   },

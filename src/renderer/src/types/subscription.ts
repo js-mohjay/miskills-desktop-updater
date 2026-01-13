@@ -1,10 +1,9 @@
 export type SubscriptionStatus = "active" | "expired" | "cancelled";
 
-export interface Subscription {
+export interface StudentSubscription {
   _id: string;
   status: SubscriptionStatus;
 
-  // dashboard-only fields (optional)
   progress?: number;
   daysRemaining?: number;
   totalDays?: number;
