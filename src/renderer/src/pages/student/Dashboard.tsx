@@ -216,12 +216,12 @@ const Dashboard = () => {
 
           {/* Right Ads Column */}
           <div className="flex flex-col gap-6!">
-            <div className="flex flex-col justify-center items-center rounded-[8px]! border border-white/50! w-full! h-[200px]!">
+            <div className="flex flex-col text-center justify-center items-center rounded-[8px]! border border-white/50! w-full! h-[200px]!">
               <h2 className="text-lg!">Contact for Advertisement</h2>
               <span className="text-lg!">E-Mail: contact@miskills.in</span>
             </div>
 
-            <div className="flex flex-col justify-center items-center rounded-[8px]! border border-white/50! w-full! h-[400px]!">
+            <div className="flex flex-col text-center justify-center items-center rounded-[8px]! border border-white/50! w-full! h-[400px]!">
               <h2 className="text-lg!">Contact for Advertisement</h2>
               <span className="text-lg!">E-Mail: contact@miskills.in</span>
             </div>

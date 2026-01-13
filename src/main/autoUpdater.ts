@@ -35,7 +35,7 @@ export function initAutoUpdater({
   autoUpdater.on("update-available", () => {
     // 🔥 MANDATORY UPDATE TRIGGER
     updateIsMandatory = true
-    sendStatus("Critical update found. Downloading…")
+    sendStatus("Import update found. Downloading…Please don't close this window.")
   })
 
   autoUpdater.on("update-not-available", () => {
@@ -48,7 +48,7 @@ export function initAutoUpdater({
   })
 
   autoUpdater.on("update-downloaded", () => {
-    sendStatus("Installing critical update…")
+    sendStatus("Installing Import updates…Please don't close this window.")
     setTimeout(() => {
       autoUpdater.quitAndInstall()
     }, 1200)

@@ -123,7 +123,7 @@ export default function Cart() {
   /* -------------------------------------------------------------------------- */
 
   return (
-    <div className="bg-gradient-to-br from-purple-900/50 to-purple-800/40 backdrop-blur-sm border border-purple-700/50 rounded-[8px] p-6 h-full flex flex-col">
+    <div className="bg-gradient-to-br from-purple-900/50 to-purple-800/40 backdrop-blur-sm border border-purple-700/50 rounded-[8px] p-4 h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <ShoppingCart className="size-10 text-violet-300" />
@@ -179,7 +179,7 @@ export default function Cart() {
             </span>
           </div>
 
-          <div className="flex justify-between text-xl">
+          <div className="flex justify-between text-xl mb-2!">
             <span className="text-white/80">Tax (18%)</span>
             <span className="text-white font-semibold">
               ₹ {tax().toLocaleString("en-IN")}
@@ -198,7 +198,7 @@ export default function Cart() {
         <button
           disabled={!hasItems || isCreatingOrder}
           onClick={handleCheckout}
-          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 disabled:opacity-50 py-3 rounded-[8px] text-white font-semibold"
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 disabled:opacity-50 py-3 rounded-[8px] text-white font-semibold mt-2!"
         >
           {isCreatingOrder && <Loader2 className="size-5 animate-spin" />}
           {isCreatingOrder ? "Waiting for payment..." : "Proceed to Checkout"}

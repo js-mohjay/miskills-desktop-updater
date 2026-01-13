@@ -257,7 +257,7 @@ export default function SubCategories({ category, onBack }: Props) {
 
                       <hr className="line opacity-20" />
 
-                      <div className="p-6! flex items-center gap-4">
+                      <div className="p-6! flex items-center gap-2">
 
                         {/* MONTHLY OPTION (only if available) */}
                         {sub.billingType === "MONTHLY" && sub.monthlyPrice && (

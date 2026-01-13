@@ -82,7 +82,7 @@ const Courses = () => {
               </div>
             </div>
             <div className={"rounded-[8px]!"}>
-              <div className="flex flex-col justify-center items-center rounded-[8px] border border-white/50 w-full! h-[400px]!">
+              <div className="flex flex-col text-center justify-center items-center rounded-[8px] border border-white/50 w-full! h-[400px]!">
                 <h2 className="text-lg!">
                   Contact for Advertisement
                 </h2>
