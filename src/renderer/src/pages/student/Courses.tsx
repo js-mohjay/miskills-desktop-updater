@@ -1,14 +1,14 @@
-import {useEffect, useState} from "react";
-import {useQuery} from "@tanstack/react-query";
-import {AxiosError} from "axios";
-import {categoryService} from "@/services/category.service";
-import {toast} from "sonner";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { categoryService } from "@/services/category.service";
+import { toast } from "sonner";
 // import CoverflowSlider from "@/components/coverflowSlider/CoverflowSlider";
 import SubCategories from "@/components/SubCategories";
 // import {CarouselPlugin} from "@/components/AutoplayCarousel";
 // import {adData} from "@/utils/adData";
 import PortratiAd2 from "@/assets/ads/portrait-2.webp";
-import {ChevronRight} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import studentJourney from "@/assets/studentJourney.png"
 
@@ -23,9 +23,9 @@ type Category = {
 
 const Courses = () => {
 
-  const [selectedCategory, setSelectedCategory] =  useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-  const {data, error, isLoading} = useQuery<Category[], AxiosError>({
+  const { data, error, isLoading } = useQuery<Category[], AxiosError>({
     queryKey: ["categories"],
     queryFn: async () => {
       const res = await categoryService.getCategories();
@@ -63,7 +63,7 @@ const Courses = () => {
                 {data && Array.isArray(data) && data?.map((c) => (
                   <div
                     className={"relative card-secondary border border-white/30 hover:bg-violet-500! transition-all! duration-300! cursor-pointer"}
-                       onClick={() => {setSelectedCategory(c)}}
+                    onClick={() => { setSelectedCategory(c) }}
                   >
                     <div className={"flex flex-col gap-2"}>
                       <h2 className={"text-2xl"}>
@@ -78,11 +78,19 @@ const Courses = () => {
                 ))}
               </div>
               <div className={"p-2"}>
-                <img src={studentJourney} alt="" className={"w-full! h-full! rounded-[8px]!"} />
+                <img src={studentJourney} alt="" className={"w-full! h-full! rounded-[8px]! border border-white/50"} />
               </div>
             </div>
-            <div className={"border border-white/50 rounded-[8px]!"}>
-              <img src={PortratiAd2} alt="" className={"w-full! rounded-[8px]"}/>
+            <div className={"rounded-[8px]!"}>
+              <div className="flex flex-col justify-center items-center rounded-[8px] border border-white/50 w-full! h-[400px]!">
+                <h2 className="text-lg!">
+                  Contact for Advertisement
+                </h2>
+                <br />
+                <span className="text-lg!">
+                  E-Mail: contact@miskills.in
+                </span>
+              </div>
             </div>
           </div>
         ) : (

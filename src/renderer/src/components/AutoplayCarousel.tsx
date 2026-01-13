@@ -37,11 +37,23 @@ export function CarouselPlugin({ data }: CarouselPluginProps) {
         <CarouselContent>
           {data.map((item) => {
             const content = (
-              <img
-                src={item.image}
-                alt="Landscape Ad"
-                className="h-full w-auto max-h-[350px] rounded-[10px] rounded-[10px] border-2 hover:border-violet-500 transition duration-300 cursor-pointer"
-              />
+
+              <div className={"rounded-[8px]!"}>
+                <div className="flex flex-col justify-center items-center rounded-[8px] border border-white/50 w-full! h-[300px]!">
+                  <h2 className="text-lg!">
+                    Contact for Advertisement
+                  </h2>
+                  <br />
+                  <span className="text-lg!">
+                    E-Mail: contact@miskills.in
+                  </span>
+                </div>
+              </div>
+              // <img
+              //   src={item.image}
+              //   alt="Landscape Ad"
+              //   className="h-full w-auto max-h-[350px] rounded-[10px] rounded-[10px] border-2 hover:border-violet-500 transition duration-300 cursor-pointer"
+              // />
             );
 
             return (

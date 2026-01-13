@@ -1,4 +1,4 @@
-import {useAuth} from "@/store/auth/useAuthStore";
+import { useAuth } from "@/store/auth/useAuthStore";
 
 import { useQuery } from "@tanstack/react-query";
 import { studentService } from "@/services/student.service";
@@ -6,8 +6,8 @@ import { StudentDashboardResponse } from "@/types/student.dashboard";
 import { StatCard } from "@/components/cards/StatCard";
 import RealEstate from "@/assets/ads/realEstate.png"
 // import AdVideo from "@/assets/ads/ad-video.mp4"
-import {Video} from "lucide-react";
-import {useNavigate} from "react-router";
+import { Video } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const useStudentDashboard = () => {
   return useQuery<StudentDashboardResponse>({
@@ -92,8 +92,8 @@ const Dashboard = () => {
                     <span className={"font-semibold!"}>Course : </span>{sub.subcategoryId.name}
                   </h4>
                   <span className="text-xl xl:text-3xl">
-                  {sub.daysRemaining} days left
-                </span>
+                    {sub.daysRemaining} days left
+                  </span>
                 </div>
 
                 <p className="text-xl xl:text-2xl opacity-90">
@@ -109,9 +109,9 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex justify-between text-lg xl:text-xl opacity-90">
-                <span>
-                  {sub.attendedDays}/{sub.totalDays} days attended
-                </span>
+                  <span>
+                    {sub.attendedDays}/{sub.totalDays} days attended
+                  </span>
                   <span>Time Attended: {sub.attendedTimeFormatted}</span>
                 </div>
               </div>
@@ -133,21 +133,30 @@ const Dashboard = () => {
 
               <div className={"col-span-2"}>
                 <button className={"btn-primary w-full! max-w-full! text-sm! xl:text-xl!"} onClick={() => navigate('/student/meetings')}>
-                    <span>
-                      Join a session
-                    </span>
+                  <span>
+                    Join a session
+                  </span>
                 </button>
               </div>
 
             </div>
             <div className={"rounded-[8px]!"}>
-              <iframe
+              <div className="flex flex-col justify-center items-center rounded-[8px] border border-white/50 w-full! h-[400px]!">
+                <h2 className="text-xl!">
+                  Contact for Video Advertisement
+                </h2>
+                <br />
+                <span className="text-xl!">
+                  E-Mail: contact@miskills.in
+                </span>
+              </div>
+              {/* <iframe
                 src="https://www.youtube.com/embed/oYmU8Av_e84?autoplay=1&mute=1&loop=1&playlist=oYmU8Av_e84&controls=0&rel=0"
                 title="Advertisement video"
                 allow="autoplay; encrypted-media"
                 allowFullScreen
                 className="w-full aspect-video rounded-[8px] border border-white/50"
-              />
+              /> */}
             </div>
           </div>
 
@@ -163,15 +172,35 @@ const Dashboard = () => {
             {/*  className="w-full rounded-[8px] border border-white/50"*/}
             {/*/>*/}
 
-            <iframe
+            {/* <iframe
               src="https://www.youtube.com/embed/kYOP52BUZTI?autoplay=1&mute=1&loop=1&playlist=kYOP52BUZTI&controls=0&rel=0"
               title="Advertisement video"
               allow="autoplay; encrypted-media"
               allowFullScreen
               className="w-full aspect-video rounded-[8px] border border-white/50"
-            />
+            /> */}
 
-            <img src={RealEstate} alt="" className={"w-full! rounded-[8px] border border-white/50 "} />
+            <div className="flex flex-col justify-center items-center rounded-[8px] border border-white/50 w-full! h-[200px]!">
+              <h2 className="text-lg!">
+                Contact for Video Advertisement
+              </h2>
+              <br />
+              <span className="text-lg!">
+                E-Mail: contact@miskills.in
+              </span>
+            </div>
+
+
+            <div className="flex flex-col justify-center items-center rounded-[8px] border border-white/50 w-full! h-[400px]!">
+              <h2 className="text-lg!">
+                Contact for Advertisement
+              </h2>
+              <br />
+              <span className="text-lg!">
+                E-Mail: contact@miskills.in
+              </span>
+            </div>
+            {/* <img src={RealEstate} alt="" className={"w-full! rounded-[8px] border border-white/50 "} /> */}
 
 
 

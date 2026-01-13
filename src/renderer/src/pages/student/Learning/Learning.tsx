@@ -233,19 +233,40 @@ const Learning = () => {
 
             {/* ---------------------------- RIGHT ---------------------------- */}
             <div className="flex flex-col gap-6">
-              <iframe
+              {/* <iframe
                 src="https://www.youtube.com/embed/kYOP52BUZTI?autoplay=1&mute=1&loop=1&playlist=kYOP52BUZTI&controls=0&rel=0"
                 title="Advertisement video"
                 allow="autoplay; encrypted-media"
                 allowFullScreen
                 className="w-full aspect-video rounded-[8px] border border-white/50"
-              />
+              /> */}
 
-              <img
+              <div className="flex flex-col justify-center items-center rounded-[8px] border border-white/50 w-full! h-[200px]!">
+                <h2 className="text-lg!">
+                  Contact for Video Advertisement
+                </h2>
+                <br />
+                <span className="text-lg!">
+                  E-Mail: contact@miskills.in
+                </span>
+              </div>
+
+              <div className={"rounded-[8px]!"}>
+                <div className="flex flex-col justify-center items-center rounded-[8px] border border-white/50 w-full! h-[400px]!">
+                  <h2 className="text-lg!">
+                    Contact for Advertisement
+                  </h2>
+                  <br />
+                  <span className="text-lg!">
+                    E-Mail: contact@miskills.in
+                  </span>
+                </div>
+              </div>
+              {/* <img
                 src={JewelleryPortraitAd}
                 alt=""
                 className="w-full! rounded-[8px] border border-white/50"
-              />
+              /> */}
             </div>
           </div>
         ) : (
