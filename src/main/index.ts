@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { initAutoUpdater } from './autoUpdater'
 
 function createWindow(): void {
   // Create the browser window.
@@ -20,6 +21,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    initAutoUpdater(mainWindow) // ✅ HERE
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
