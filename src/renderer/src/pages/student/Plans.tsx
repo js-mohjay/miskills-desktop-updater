@@ -10,6 +10,7 @@ import { CarouselPlugin } from "@/components/AutoplayCarousel";
 import { adData } from "@/utils/adData";
 
 import bgImg from "@/assets/bgBubbles.png"
+import { useAuth } from "@/store/auth/useAuthStore";
 
 type Category = {
   _id: string;
@@ -21,6 +22,9 @@ type Category = {
 };
 
 export default function Plans() {
+
+  const {logout} = useAuth()
+
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
   const { data, error, isLoading } = useQuery<Category[], AxiosError>({
@@ -87,9 +91,16 @@ export default function Plans() {
 
   if (isLoading) return null;
 
+  const handleLogout = async () => {
+    const logoutRes = await logout()
+
+      console.log("logout", logoutRes)
+    // navigate("/signin", {replace: true})
+  }
+
   return (
     <div
-      className="h-screen  z-[50] bg-cover bg-center"
+      className="h-screen z-[50] bg-cover bg-center relative"
       style={{ backgroundImage: `url(${bgImg})` }}
     >
       {!selectedCategory ? (
@@ -108,6 +119,16 @@ export default function Plans() {
           />
         </div>
       )}
+
+
+      <button 
+        onClick={handleLogout}
+        className="z-[999] absolute bottom-4 left-4 px-4 py-2 text-white bg-red-600 hover:bg-red-700 transition duration-300 cursor-pointer"
+      >
+        Logout
+      </button>
+  
+
     </div>
   );
 }

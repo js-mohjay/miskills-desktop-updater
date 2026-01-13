@@ -84,11 +84,11 @@ const SignIn = () => {
       toast.success("Login Successful!");
       // wait 1 tick for Zustand update + router refresh
       requestAnimationFrame(() => {
-        if(d?.user?.studentId && d.user.studentId.length > 0) {
+        if (d?.user?.studentId && d.user.studentId.length > 0) {
           if (d.user.role === "admin") navigate("/admin");
           else if (d.user.role === "student") navigate("/student");
           else if (d.user.role === "training") navigate("/training");
-          else navigate("/", {replace: true})
+          else navigate("/", { replace: true })
         } else {
           navigate("/onboard", { replace: true });
         }
@@ -254,11 +254,11 @@ const SignIn = () => {
           transition={{ duration: 0.5 }}
         >
           <span>
-          {(sendOtpMutation.isPending || verifyOtpMutation.isPending) ? (
-            <LoaderIcon size={30} className="animate-spin" />
-          ) : (
-            isOtpSent ? "Verify & Login" : "Send OTP"
-          )}
+            {(sendOtpMutation.isPending || verifyOtpMutation.isPending) ? (
+              <LoaderIcon size={30} className="animate-spin" />
+            ) : (
+              isOtpSent ? "Verify & Login" : "Send OTP"
+            )}
           </span>
 
         </motion.button>
@@ -273,12 +273,27 @@ const SignIn = () => {
         </motion.p>
 
         <motion.p
+          className="absolute left-6 bottom-4 text-sm"
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <button
+            onClick={() => window.api.quitApp()}
+            className="px-4 py-2 text-lg! bg-red-600 hover:bg-red-700 rounded-[8px] text-white cursor-pointer"
+          >
+            Exit App
+          </button>
+
+        </motion.p>
+
+        <motion.p
           className="absolute right-4 bottom-4 text-sm"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-           <Link to="/employee-signin" className="text-violet-400 hover:text-violet-500 hover:underline transition duration-300 cursor-pointer">Employee Portal</Link>
+          <Link to="/employee-signin" className="text-violet-400 hover:text-violet-500 hover:underline transition duration-300 cursor-pointer">Employee Portal</Link>
         </motion.p>
 
       </form>
