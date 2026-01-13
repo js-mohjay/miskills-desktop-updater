@@ -56,6 +56,7 @@ export default function Cart() {
     pollTimerRef.current = setInterval(async () => {
       try {
         const res = await paymentsService.getOrderStatus(orderId)
+
         if (["paid", "PAID"].includes(res.data?.data?.payment?.status)) {
           clearInterval(pollTimerRef.current!)
           setIsCreatingOrder(false)

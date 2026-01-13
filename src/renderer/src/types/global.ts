@@ -14,6 +14,8 @@ declare global {
       onUpdateProgress: (callback: (percent: number) => void) => void;
 
       quitApp: () => Promise<void>;
+
+      reloadApp: () => Promise<void>;
     };
   }
 }

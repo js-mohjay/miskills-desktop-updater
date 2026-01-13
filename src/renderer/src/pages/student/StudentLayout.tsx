@@ -1,13 +1,14 @@
 // pages/student/StudentLayout.tsx
-import {Outlet} from "react-router";
-import {SidebarProvider} from "@/components/ui/sidebar";
-import {AppSidebar} from "@/components/AppSidebar";
+import { Outlet } from "react-router";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 
 import {
   BriefcaseBusiness,
   Home,
   Library,
+  RefreshCcw,
   Rocket, Video,
 } from "lucide-react"
 
@@ -133,10 +134,14 @@ const sidebarData = {
 export default function StudentLayout() {
   return (
     <SidebarProvider>
-      <AppSidebar data={sidebarData}/>
+      <AppSidebar data={sidebarData} />
       <main className="flex-1">
+
+        <button className="absolute top-6 right-6 text-white!" onClick={() => window.api.reloadApp()}>
+          <RefreshCcw className="size-8 cursor-pointer" />
+        </button>
         {/*<SidebarTrigger />*/}
-        <Outlet/>
+        <Outlet />
       </main>
     </SidebarProvider>
   );

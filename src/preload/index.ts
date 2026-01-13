@@ -5,6 +5,9 @@ import { contextBridge, ipcRenderer } from "electron"
 // =======================================================
 const api = {
   quitApp: () => ipcRenderer.invoke("app:quit"),
+
+  // 🔥 GLOBAL REFRESH
+  reloadApp: () => ipcRenderer.invoke("app:reload"),
 }
 
 // =======================================================

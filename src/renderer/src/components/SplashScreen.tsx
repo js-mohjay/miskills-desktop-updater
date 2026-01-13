@@ -13,7 +13,7 @@ export default function SplashScreen({ onFinish }: { onFinish?: () => void }) {
     const handleEnded = () => {
       setTimeout(() => {
         setIsDone(true);
-      }, 350); // same pause as before
+      }, 100); // same pause as before
     };
 
     video.addEventListener("ended", handleEnded);

@@ -1,44 +1,28 @@
-import { RouterProvider } from "react-router";
-import { router } from "./routes/AppRoutes";
-import SplashScreen from "./components/SplashScreen";
-import { JSX, useState } from "react";
-// import { useSocketStore } from "@/store/useSocketStore";
-// import {toast} from "sonner";
+import { RouterProvider } from "react-router"
+import { router } from "./routes/AppRoutes"
+import SplashScreen from "./components/SplashScreen"
+import { JSX, useState } from "react"
 
 function App(): JSX.Element {
-  const [showSplash, setShowSplash] = useState(true);
-
-  // const { status, error, connectSocket } = useSocketStore();
+  // 🔥 READ from localStorage on first render
+  const [showSplash, setShowSplash] = useState(() => {
+    return !localStorage.getItem("hasSeenSplash")
+  })
 
   const handleSplashFinish = () => {
-    localStorage.setItem("hasSeenSplash", "true");
-    setShowSplash(false);
-  };
-
-  // 🔌 Connect socket ONCE at app mount
-  // useEffect(() => {
-  //   connectSocket(false);
-  // }, [connectSocket]);
-
-  // Optional: debug / monitoring
-  // useEffect(() => {
-  //   console.log("Socket status:", status, error);
-  //   // if(status) toast.success(status)
-  //   if(error) toast.error(error)
-  // }, [status, error]);
+    localStorage.setItem("hasSeenSplash", "true")
+    setShowSplash(false)
+  }
 
   return (
     <div className="w-full h-screen">
       {showSplash ? (
         <SplashScreen onFinish={handleSplashFinish} />
       ) : (
-        <RouterProvider
-          key={showSplash ? "splash" : "app"}
-          router={router}
-        />
+        <RouterProvider router={router} />
       )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

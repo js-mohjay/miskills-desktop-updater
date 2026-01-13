@@ -60,6 +60,7 @@ export function NavUser() {
 
 
   const handleExitApp = async () => {
+    localStorage.removeItem("hasSeenSplash")
     await window.api.quitApp()
   }
 

@@ -279,7 +279,10 @@ const SignIn = () => {
           transition={{ duration: 0.5 }}
         >
           <button
-            onClick={() => window.api.quitApp()}
+            onClick={() => {
+              localStorage.removeItem("hasSeenSplash")
+              window.api.quitApp()
+            }}
             className="px-4 py-2 text-lg! bg-red-600 hover:bg-red-700 rounded-[8px] text-white cursor-pointer"
           >
             Exit App
