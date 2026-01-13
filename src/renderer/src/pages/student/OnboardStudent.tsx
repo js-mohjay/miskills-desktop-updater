@@ -44,18 +44,6 @@ type StateItem = {
   name: string;
 };
 
-// city.json
-// type CityItem = {
-//   id: number;
-//   name: string;
-// };
-
-// type StateCityMap = {
-//   id: number;
-//   name: string;
-//   cities: CityItem[];
-// };
-
 
 const formSchema = z.object({
   avatar: z.string().optional(),
@@ -89,7 +77,7 @@ const OnboardStudent = () => {
 
   let navigate = useNavigate()
 
-  const { studentId, setStudentId } = useAuth()
+  const { studentId, setStudentId, logout } = useAuth()
   const user = useAuth(s => s.user)
 
   const dynamicSchema = isOtpSent
@@ -144,6 +132,7 @@ const OnboardStudent = () => {
 
   const selectedState = watch("state");
   const selectedCollege = watch("college");
+  const selectedDOB = watch("dob")
 
   const selectedStateCities =
     cities.find((s) => s.name === selectedState)?.cities ?? [];
@@ -230,7 +219,6 @@ const OnboardStudent = () => {
 
   const onSubmit = (data: FormData) => {
 
-    console.log(data)
 
     if (!isOtpSent) {
       console.log('sending otp')
@@ -252,8 +240,17 @@ const OnboardStudent = () => {
   };
 
 
+  
+  const handleLogout = async () => {
+    const logoutRes = await logout()
+
+      console.log("logout", logoutRes)
+    // navigate("/signin", {replace: true})
+  }
+
+
   return (
-    <div className="h-screen flex flex-col justify-center items-center">
+    <div className="h-screen flex flex-col justify-center items-center relative">
       <form
         className="w-full h-full p-24 max-w-2xl flex flex-col justify-center items-center gap-5"
         onSubmit={handleSubmit(onSubmit)}
@@ -599,7 +596,7 @@ const OnboardStudent = () => {
             disabled:cursor-not-allowed!
             disabled:pointer-events-none!
           "
-          disabled={!isOtpSent && !selectedCollege}
+          disabled={!isOtpSent && !selectedCollege && !selectedDOB}
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -616,6 +613,14 @@ const OnboardStudent = () => {
 
 
       </form>
+
+      <button
+        onClick={handleLogout}
+        className="z-[999] absolute bottom-4 left-4 px-4 py-2 text-white bg-red-600 hover:bg-red-700 transition duration-300 cursor-pointer"
+      >
+        Logout
+      </button>
+
     </div>
 
   );

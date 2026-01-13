@@ -170,7 +170,7 @@ export default function SubCategories({ category, onBack }: Props) {
       </div>
 
       <div className="grid grid-cols-12 gap-8 w-full h-full max-h-[90vh]">
-        <div className="col-span-8 text-white space-y-8! px-8 h-full overflow-y-auto">
+        <div className="col-span-9 text-white space-y-8! px-8 h-full overflow-y-auto">
           <div
             className="rounded-[8px] border border-white/50 hover:border-violet-500/50 bg-gradient-to-br from-violet-950/60 to-gray-800/60 backdrop-blur-sm">
             {/*<div className="card__border w-full h-full"></div>*/}
@@ -540,7 +540,7 @@ export default function SubCategories({ category, onBack }: Props) {
           )}
         </div>
 
-        <div className="col-span-4 h-full pr-8!">
+        <div className="col-span-3 h-full pr-4!">
           <Cart />
         </div>
 

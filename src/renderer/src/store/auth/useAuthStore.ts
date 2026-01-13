@@ -53,7 +53,7 @@ export const useAuth = create<AuthState>()(
       rehydrated: false,
 
       clearState: async () => {
-        set({ user: null, accessToken: null, refreshToken: null })
+        set({ user: null, accessToken: null, refreshToken: null, studentId: null })
       },
 
       // login: (user, accessToken, refreshToken) => set({ user, accessToken, refreshToken }),

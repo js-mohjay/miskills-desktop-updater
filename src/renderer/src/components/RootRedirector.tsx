@@ -55,8 +55,11 @@ export default function RootRedirect() {
         (sub) => sub.status === "active"
       );
 
+      
+
       // ❌ no active subscription → plans
       if (user.studentId && !hasActiveSubscription) {
+        console.log('user id in root redirector', user.studentId)
         return <Navigate to="/plans" replace />;
       }
 

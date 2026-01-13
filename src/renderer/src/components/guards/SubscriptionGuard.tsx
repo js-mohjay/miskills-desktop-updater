@@ -30,6 +30,7 @@ export function SubscriptionGuard() {
     ) || data.careerSupportPurchased;
 
   if (!hasActiveSubscription) {
+    console.log('sub guard')
     return <Navigate to="/plans" replace />;
   }
 
