@@ -1,4 +1,8 @@
-export type StudentDashboardResponse = {
+import { CareerSupportSummary } from "./careerSupport";
+import { Subscription } from "./subscription";
+
+
+export interface StudentDashboardResponse {
   success: boolean;
   data: {
     summary: {
@@ -6,22 +10,8 @@ export type StudentDashboardResponse = {
       avgProgress: number;
       avgDaysRemaining: number;
       totalTimeFormatted: string;
+      careerSupport?: CareerSupportSummary;
     };
-    subscriptions: {
-      _id: string;
-      subcategoryId: {
-        _id: string;
-        name: string;
-        description: string;
-      };
-      startDate: string;
-      endDate: string;
-      daysRemaining: number;
-      progress: number;
-      attendedDays: number;
-      totalDays: number;
-      attendedTimeSeconds: number;
-      attendedTimeFormatted: string;
-    }[];
+    subscriptions: Subscription[];
   };
-};
+}

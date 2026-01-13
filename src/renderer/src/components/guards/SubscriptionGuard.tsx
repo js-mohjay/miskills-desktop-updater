@@ -10,20 +10,24 @@ type Subscription = {
 };
 
 export function SubscriptionGuard() {
-  const user = useAuth(s => s.user);
+  const user = useAuth((s) => s.user);
 
-  const { data, isLoading } = useQuery<Subscription[]>({
-    queryKey: ["subscriptions", user?._id],
+  const { data, isLoading } = useQuery({
+    queryKey: ["subscriptions-v3", user?._id], // new key to avoid stale cache
     enabled: !!user,
-    queryFn: async () => {
-      const res = await studentService.getSubscriptions(1, 50);
-      return res.data.data;
-    },
+    queryFn: () => studentService.getSubscriptions(1, 50),
+    select: (res) => ({
+      subscriptions: Array.isArray(res.data?.data) ? res.data.data : [],
+      careerSupportPurchased: res.data?.careerSupportPurchased === true,
+    }),
   });
 
-  if (isLoading) return null;
+  if (isLoading || !data) return null;
 
-  const hasActiveSubscription = data?.some(s => s.status === "active");
+  const hasActiveSubscription =
+    data.subscriptions.some(
+      (s: Subscription) => s.status === "active"
+    ) || data.careerSupportPurchased;
 
   if (!hasActiveSubscription) {
     return <Navigate to="/plans" replace />;
