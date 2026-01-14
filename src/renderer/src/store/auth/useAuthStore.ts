@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import { Category } from "@/types/category";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
@@ -35,6 +36,11 @@ interface AuthState {
   refreshAccessToken: () => Promise<string | null>;
 
   hasRole: (role: Role) => boolean;
+
+  selectedCategory: Category | null;
+  setSelectedCategory: (data: Category | null) => void;
+
+
 
   rehydrated: boolean; // <-- new
 }
@@ -115,6 +121,10 @@ export const useAuth = create<AuthState>()(
       },
 
       hasRole: (role) => get().user?.role === role,
+
+      selectedCategory: null,
+      setSelectedCategory: (data: Category | null) => set({selectedCategory: data}),
+
     }),
 
     {

@@ -29,7 +29,7 @@ export const adminInstructorService = {
     name: string
     email: string
     phoneNumber: string
-    specializations: string
+    // specializations: string
     skills: string[]
   }) => {
     return api.post("/api/admin/instructors", payload)
@@ -41,7 +41,7 @@ export const adminInstructorService = {
       name: string
       email: string
       phoneNumber: string
-      specializations: string
+      // specializations: string
       skills: string[]
     }
   ) => {

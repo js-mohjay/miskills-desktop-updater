@@ -8,9 +8,9 @@ export const subAdminService = {
     name: string;
     email: string;
     phoneNumber: string;
-    role: "training" | "placement";
+    role: "training" | "placement" | "instructor";
     skills?: string;
-    specializations?: string;
+    // specializations?: string;
   }) =>
     api.post("/api/auth/register-admin", payload),
 

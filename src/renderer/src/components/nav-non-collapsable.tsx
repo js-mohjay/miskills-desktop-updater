@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/store/auth/useAuthStore"
 import { LucideIcon } from "lucide-react"
 import { Link } from "react-router"
 
@@ -24,8 +25,10 @@ export function NavNonCollapsable({
     url: string
     icon: LucideIcon
   }[],
-  title ?: string
+  title?: string
 }) {
+
+  const { setSelectedCategory } = useAuth()
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:visible xl:py-4!">
@@ -34,7 +37,12 @@ export function NavNonCollapsable({
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton className="text-xl 2xl:text-[1.3rem]" tooltip={item.name} asChild>
-              <Link to={item.url} className={"py-2! 2xl:py-6!"}>
+              <Link
+                to={item.url}
+                className={"py-2! 2xl:py-6!"}
+                onClick={() => {
+                 if(item.name === "Courses") setSelectedCategory(null)
+                }}>
                 <item.icon className="size-6!" />
                 <span>{item.name}</span>
               </Link>

@@ -11,19 +11,14 @@ import PortratiAd2 from "@/assets/ads/portrait-2.webp";
 import { ChevronRight } from "lucide-react";
 
 import studentJourney from "@/assets/studentJourney.png"
+import { Category } from "@/types/category";
+import { useAuth } from "@/store/auth/useAuthStore";
 
-type Category = {
-  _id: string;
-  name: string;
-  description: string;
-  benefits: string[],
-  tags: string[];
-  slug: string;
-};
+
 
 const Courses = () => {
 
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const {selectedCategory, setSelectedCategory} = useAuth()
 
   const { data, error, isLoading } = useQuery<Category[], AxiosError>({
     queryKey: ["categories"],
@@ -33,9 +28,9 @@ const Courses = () => {
     },
   });
 
-  useEffect(() => {
-    console.log(data)
-  }, [data]);
+  // useEffect(() => {
+  //   console.log(data)
+  // }, [data]);
 
   useEffect(() => {
     if (error) {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import {
     Dialog,
     DialogContent,
@@ -23,8 +23,11 @@ import {
 
 import {
     adminBatchService,
+    adminCategoryService,
     adminInstructorService,
 } from "@/services/admin.service"
+import { CategoryListResponse } from "@/types/admin.category"
+import { Loader } from "lucide-react"
 
 /* -------------------------------------------------------------------------- */
 
@@ -53,16 +56,96 @@ export default function BatchDialog({
     const isEdit = mode === "edit"
     const queryClient = useQueryClient()
 
-    /* --------------------------- INSTRUCTORS LIST --------------------------- */
+    const [selectedCategory, setSelectedCategory] = useState<string>("")
+    const [selectedSubcategory, setSelectedSubcategory] = useState<string>("")
+
+    const [categoryOptions, setCategoryOptions] = useState<
+        { label: string; value: string }[]
+    >([])
+
+    const [subcategoryOptions, setSubcategoryOptions] = useState<
+        { label: string; value: string }[]
+    >([])
+
+    /* ---------------------------- CATEGORIES ---------------------------- */
+
+    const {
+        data: categoriesData,
+        isLoading: isCategoriesLoading,
+        isError: isCategoriesError,
+    } = useQuery<CategoryListResponse>({
+        queryKey: ["admin-categories"],
+        queryFn: async () => {
+            const res = await adminCategoryService.getCategories()
+            return res.data
+        },
+        staleTime: 1000 * 60 * 5,
+    })
+
+    useEffect(() => {
+        if (categoriesData?.data?.categories?.length) {
+            setCategoryOptions(
+                categoriesData.data.categories.map((cat) => ({
+                    label: cat.name,
+                    value: cat._id,
+                }))
+            )
+
+            if (isEdit && batch?.subcategoryId?.categoryId) {
+                setSelectedCategory(batch.subcategoryId.categoryId)
+            }
+        }
+    }, [categoriesData, isEdit, batch])
+
+    /* -------------------------- SUBCATEGORIES --------------------------- */
+
+    const {
+        data: subcategoriesData,
+        isLoading: isSubcategoriesLoading,
+    } = useQuery({
+        queryKey: ["admin-subcategories", selectedCategory],
+        enabled: !!selectedCategory,
+        queryFn: async () => {
+            const res =
+                await adminCategoryService.getSubcategories(
+                    selectedCategory
+                )
+            return res.data
+        },
+    })
+
+    useEffect(() => {
+        if (subcategoriesData?.data?.subcategories) {
+            setSubcategoryOptions(
+                subcategoriesData.data.subcategories.map(
+                    (sub: any) => ({
+                        label: sub.name,
+                        value: sub._id,
+                    })
+                )
+            )
+
+            if (isEdit && batch?.subcategoryId?._id) {
+                setSelectedSubcategory(batch.subcategoryId._id)
+                form.setValue(
+                    "subcategoryId",
+                    batch.subcategoryId._id
+                )
+            }
+        } else {
+            setSubcategoryOptions([])
+        }
+    }, [subcategoriesData, isEdit, batch])
+
+    /* --------------------------- INSTRUCTORS ---------------------------- */
 
     const { data: instructorsRes } = useQuery({
         queryKey: ["admin-instructors-dropdown"],
         queryFn: async () => {
-            const res =
-                await adminInstructorService.getInstructors(
-                    1,
-                    100
-                )
+            const res = await adminInstructorService.getInstructors(
+                1,
+                100
+            )
             return res.data
         },
     })
@@ -70,7 +153,7 @@ export default function BatchDialog({
     const instructors =
         instructorsRes?.data?.instructors || []
 
-    /* ------------------------------- FORM ---------------------------------- */
+    /* ------------------------------- FORM -------------------------------- */
 
     const form = useForm({
         defaultValues: {
@@ -103,15 +186,12 @@ export default function BatchDialog({
         }
     }, [batch, form])
 
-    /* ------------------------------ MUTATION ------------------------------- */
+    /* ------------------------------ MUTATION ----------------------------- */
 
     const mutation = useMutation({
         mutationFn: (values: any) =>
             isEdit
-                ? adminBatchService.updateBatch(
-                    batch._id,
-                    values
-                )
+                ? adminBatchService.updateBatch(batch._id, values)
                 : adminBatchService.createBatch(values),
         onSuccess: () => {
             queryClient.invalidateQueries({
@@ -121,7 +201,7 @@ export default function BatchDialog({
         },
     })
 
-    /* ------------------------------------------------------------------------ */
+    /* -------------------------------------------------------------------- */
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
@@ -138,39 +218,86 @@ export default function BatchDialog({
                     )}
                     className="grid grid-cols-2 gap-4 mt-2"
                 >
-                    {/* ------------------------------ NAME ------------------------------ */}
-                    <Input
-                        label="Name"
-                        {...form.register("name")}
-                    />
+                    <Input label="Name" {...form.register("name")} />
+
+                    {/* ---------------------------- CATEGORY ---------------------------- */}
+                    <div className="space-y-1">
+                        <label className="text-sm text-white/70">
+                            Category
+                        </label>
+
+                        <Select
+                            value={selectedCategory}
+                            onValueChange={(v) => {
+                                setSelectedCategory(v)
+                                setSelectedSubcategory("")
+                                setSubcategoryOptions([])
+                                form.setValue("subcategoryId", "")
+                            }}
+                            disabled={isCategoriesLoading || isCategoriesError}
+                        >
+                            <SelectTrigger className="w-full! py-5! bg-[#222020] border border-gray-700 rounded-[8px]">
+                                <SelectValue
+                                    placeholder={
+                                        isCategoriesLoading
+                                            ? "Loading categories..."
+                                            : "Select Category"
+                                    }
+                                />
+                            </SelectTrigger>
+
+                            <SelectContent className="bg-[#181b1d] border border-white/10">
+                                {categoryOptions.map((opt) => (
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
+                                        {opt.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
 
                     {/* -------------------------- SUBCATEGORY --------------------------- */}
                     <div className="space-y-1">
                         <label className="text-sm text-white/70">
                             Subcategory
                         </label>
-                        <input
-                            value={batch?.subcategoryId?.name || ""}
-                            disabled
-                            className={`${inputBase} opacity-70`}
-                        />
+
+                        <Select
+                            value={selectedSubcategory}
+                            onValueChange={(v) => {
+                                setSelectedSubcategory(v)
+                                form.setValue("subcategoryId", v)
+                            }}
+                            disabled={
+                                !selectedCategory ||
+                                isSubcategoriesLoading
+                            }
+                        >
+                            <SelectTrigger className="w-full! py-5! bg-[#222020] border border-gray-700 rounded-[8px]">
+                                <SelectValue
+                                    placeholder={
+                                        isSubcategoriesLoading
+                                            ? "Loading subcategories..."
+                                            : "Select Subcategory"
+                                    }
+                                />
+                            </SelectTrigger>
+
+                            <SelectContent className="bg-[#181b1d] border border-white/10">
+                                {subcategoryOptions.map((opt) => (
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
+                                        {opt.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
-
-                    {/* --------------------------- DESCRIPTION -------------------------- */}
-                    <div className="col-span-2 space-y-1">
-                        <label className="text-sm text-white/70">
-                            Description
-                        </label>
-                        <textarea
-                            {...form.register("description")}
-                            rows={3}
-                            className={`${inputBase} resize-none`}
-                            placeholder="Enter batch description"
-                        />
-                    </div>
-
-
-                    
 
                     {/* -------------------------- INSTRUCTOR ---------------------------- */}
                     <div className="space-y-1">
@@ -188,17 +315,16 @@ export default function BatchDialog({
                             }
                         >
                             <SelectTrigger
-                                className={`${inputBase} flex justify-between py-5!`}
+                                className={`${inputBase} py-5!`}
                             >
                                 <SelectValue placeholder="Select Instructor" />
                             </SelectTrigger>
 
-                            <SelectContent className="bg-black border border-violet-500/30 rounded-[8px] text-white">
+                            <SelectContent className="bg-black border border-violet-500/30">
                                 {instructors.map((inst: any) => (
                                     <SelectItem
                                         key={inst._id}
                                         value={inst._id}
-                                        className="focus:bg-violet-500/20 focus:text-white"
                                     >
                                         {inst.name}
                                     </SelectItem>
@@ -207,44 +333,59 @@ export default function BatchDialog({
                         </Select>
                     </div>
 
-                    {/* ---------------------------- DATES ------------------------------- */}
+                    {/* --------------------------- DESCRIPTION -------------------------- */}
+                    <div className="col-span-2 space-y-1">
+                        <label className="text-sm text-white/70">
+                            Description
+                        </label>
+                        <textarea
+                            {...form.register("description")}
+                            rows={3}
+                            className={`${inputBase} resize-none`}
+                        />
+                    </div>
+
+
+
                     <Input
                         type="date"
                         label="Start Date"
                         {...form.register("startDate")}
                     />
-
                     <Input
                         type="date"
                         label="End Date"
                         {...form.register("endDate")}
                     />
-
-                    {/* ---------------------------- TIMES ------------------------------- */}
                     <Input
                         type="time"
                         label="Start Time"
                         {...form.register("startTime")}
                     />
-
                     <Input
                         type="time"
                         label="End Time"
                         {...form.register("endTime")}
                     />
 
-                    {/* ----------------------------- ACTION ----------------------------- */}
                     <div className="col-span-2 flex justify-end mt-4">
                         <button
                             type="submit"
-                            className="btn-primary"
                             disabled={mutation.isPending}
+                            className="relative"
                         >
-                            <span>
-                                {isEdit ? "Update" : "Create"}
+                            <span className="btn-primary flex items-center gap-2">
+                                <span>
+                                    {mutation.isPending ? (
+                                        <Loader className="size-6 animate-spin" />
+                                    ) : (
+                                        isEdit ? "Update" : "Create"
+                                    )}
+                                </span>
                             </span>
                         </button>
                     </div>
+
                 </form>
             </DialogContent>
         </Dialog>
@@ -252,14 +393,8 @@ export default function BatchDialog({
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                  INPUT                                     */
-/* -------------------------------------------------------------------------- */
 
-function Input({
-    label,
-    type = "text",
-    ...props
-}: any) {
+function Input({ label, type = "text", ...props }: any) {
     return (
         <div className="space-y-1">
             <label className="text-sm text-white/70">
@@ -269,10 +404,10 @@ function Input({
                 type={type}
                 {...props}
                 className={`${inputBase}
-          [color-scheme:dark]
+          [color-scheme:light]
           [&::-webkit-calendar-picker-indicator]:invert
           [&::-webkit-calendar-picker-indicator]:opacity-70
-        `}
+          `}
             />
         </div>
     )

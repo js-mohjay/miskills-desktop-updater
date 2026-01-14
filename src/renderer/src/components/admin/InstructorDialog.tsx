@@ -10,6 +10,7 @@ import {
 import { useForm } from "react-hook-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { adminInstructorService } from "@/services/admin.service"
+import { subAdminService } from "@/services/subAdmin.service"
 
 type Mode = "add" | "view" | "edit"
 
@@ -36,7 +37,7 @@ export default function InstructorDialog({
       name: "",
       email: "",
       phoneNumber: "",
-      specializations: "",
+      // specializations: "",
       skills: "",
     },
   })
@@ -47,7 +48,7 @@ export default function InstructorDialog({
         name: instructor.name,
         email: instructor.email,
         phoneNumber: instructor.phoneNumber,
-        specializations: instructor.specializations || "",
+        // specializations: instructor.specializations || "",
         skills: instructor.skills?.join(", ") || "",
       })
     }
@@ -57,6 +58,7 @@ export default function InstructorDialog({
     mutationFn: async (values: any) => {
       const payload = {
         ...values,
+        role: "instructor",
         skills: values.skills
           .split(",")
           .map((s: string) => s.trim()),
@@ -69,7 +71,7 @@ export default function InstructorDialog({
         )
       }
 
-      return adminInstructorService.createInstructor(payload)
+      return subAdminService.create(payload)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -91,8 +93,8 @@ export default function InstructorDialog({
             {mode === "add"
               ? "Add Instructor"
               : mode === "edit"
-              ? "Edit Instructor"
-              : "Instructor Details"}
+                ? "Edit Instructor"
+                : "Instructor Details"}
           </DialogTitle>
         </DialogHeader>
 
@@ -115,11 +117,11 @@ export default function InstructorDialog({
             disabled={isView}
             {...form.register("phoneNumber")}
           />
-          <InputField
+          {/* <InputField
             label="Specializations"
             disabled={isView}
             {...form.register("specializations")}
-          />
+          /> */}
           <InputField
             label="Skills (comma separated)"
             disabled={isView}

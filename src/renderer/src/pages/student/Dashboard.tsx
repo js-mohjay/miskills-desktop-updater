@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { studentService } from "@/services/student.service";
 import { StudentDashboardResponse } from "@/types/student.dashboard";
 import { StatCard } from "@/components/cards/StatCard";
-import { Video, Upload, Briefcase } from "lucide-react";
+import { Video, Upload, Briefcase, RefreshCcw } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 
@@ -82,8 +82,12 @@ const Dashboard = () => {
   };
 
   return (
-    <section className="w-full max-h-screen overflow-y-auto p-10! space-y-10!">
+    <section className="relative w-full max-h-screen overflow-y-auto p-10! space-y-10!">
       {/* Header */}
+      <button className="absolute! top-6 right-6 text-white!" onClick={() => window.api.reloadApp()}>
+        <RefreshCcw className="size-8 cursor-pointer" />
+      </button>
+
       <div>
         <h2 className="text-5xl! leading-tight!">
           Welcome {user?.name ?? ""} 👋

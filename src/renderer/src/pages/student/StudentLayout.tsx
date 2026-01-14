@@ -136,10 +136,6 @@ export default function StudentLayout() {
     <SidebarProvider>
       <AppSidebar data={sidebarData} />
       <main className="flex-1">
-
-        <button className="absolute top-6 right-6 text-white!" onClick={() => window.api.reloadApp()}>
-          <RefreshCcw className="size-8 cursor-pointer" />
-        </button>
         {/*<SidebarTrigger />*/}
         <Outlet />
       </main>
