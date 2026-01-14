@@ -83,12 +83,12 @@ const Courses = () => {
             </div>
             <div className={"rounded-[8px]!"}>
               <div className="flex flex-col text-center justify-center items-center rounded-[8px] border border-white/50 w-full! h-[400px]!">
-                <h2 className="text-lg!">
+                <h2 className="text-base!">
                   Contact for Advertisement
                 </h2>
                 <br />
-                <span className="text-lg!">
-                  E-Mail: contact@miskills.in
+                <span className="text-base!">
+                  E-Mail: <a href="mailto:contact@miskills.in">contact@miskills.in</a>
                 </span>
               </div>
             </div>

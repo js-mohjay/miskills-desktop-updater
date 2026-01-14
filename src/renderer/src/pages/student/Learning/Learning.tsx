@@ -251,7 +251,7 @@ const Learning = () => {
                 </h2>
                 <br />
                 <span className="text-lg!">
-                  E-Mail: contact@miskills.in
+                  E-Mail: <a href="mailto:contact@miskills.in">contact@miskills.in</a>
                 </span>
               </div>
 
@@ -262,7 +262,7 @@ const Learning = () => {
                   </h2>
                   <br />
                   <span className="text-lg!">
-                    E-Mail: contact@miskills.in
+                    E-Mail: <a href="mailto:contact@miskills.in">contact@miskills.in</a>
                   </span>
                 </div>
               </div>

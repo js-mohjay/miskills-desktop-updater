@@ -58,9 +58,20 @@ export function AppSidebar({ data, ...props }: AppSidebarProps) {
                     {data?.navNonCollapsable && <NavNonCollapsable projects={data.navNonCollapsable} />}
                 </div>
                 {
-                    data?.showAd && (
+                    user?.role === "student" && (
                         <div className={"group-data-[collapsible=icon]:hidden p-1 flex! justify-center! items-center! flex-1! border-t-2"}>
-                            <img src={ResortAd} alt={""} className={"w-full rounded-[8px]! border border-white/50 max-h-3/4!"} />
+                            <div className={"rounded-[8px]!"}>
+                                <div className="flex flex-col text-center justify-center items-center rounded-[8px] border border-white/50 w-full! h-[250px]! px-2">
+                                    <h2 className="text-base!">
+                                        Contact for Advertisement
+                                    </h2>
+                                    <br />
+                                    <span className="text-base!">
+                                        E-Mail: <a href="mailto:contact@miskills.in">contact@miskills.in</a>
+                                    </span>
+                                </div>
+                            </div>
+                            {/* <img src={ResortAd} alt={""} className={"w-full rounded-[8px]! border border-white/50 max-h-3/4!"} /> */}
                         </div>
                     )
                 }
