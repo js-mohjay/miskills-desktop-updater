@@ -28,6 +28,8 @@ import {
 } from "@/services/admin.service"
 import { CategoryListResponse } from "@/types/admin.category"
 import { Loader } from "lucide-react"
+import { toast } from "sonner"
+import { AxiosError } from "axios"
 
 /* -------------------------------------------------------------------------- */
 
@@ -188,16 +190,35 @@ export default function BatchDialog({
 
     /* ------------------------------ MUTATION ----------------------------- */
 
-    const mutation = useMutation({
-        mutationFn: (values: any) =>
+
+    type ApiErrorResponse = {
+        success: boolean
+        message?: string
+    }
+
+
+    const mutation = useMutation<any, AxiosError<ApiErrorResponse>, any>({
+        mutationFn: (values) =>
             isEdit
                 ? adminBatchService.updateBatch(batch._id, values)
                 : adminBatchService.createBatch(values),
+
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["admin-batches"],
             })
             onClose()
+
+            toast.info(
+                `Batch ${isEdit ? "Edited" : "Added"} successfully.`
+            )
+        },
+
+        onError: (error) => {
+            toast.error(
+                error.response?.data?.message ||
+                `Could not ${isEdit ? "edit" : "add"} batch, please try again later.`
+            )
         },
     })
 

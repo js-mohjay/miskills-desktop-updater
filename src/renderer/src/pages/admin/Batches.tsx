@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { adminBatchService } from "@/services/admin.service"
 import BatchDialog from "@/components/admin/batch/BatchDialog"
 import ConfirmDeleteAlert from "@/components/common/ConfirmDeleteAlert"
@@ -12,14 +12,12 @@ const Batches = () => {
   const [dialog, setDialog] = useState<any>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
+  const queryClient = useQueryClient()
+
   const { data } = useQuery({
     queryKey: ["admin-batches", page],
     queryFn: async () => {
-      const res =
-        await adminBatchService.getBatches(
-          page,
-          10
-        )
+      const res = await adminBatchService.getBatches(page, 10)
       return res.data
     },
   })
@@ -27,7 +25,12 @@ const Batches = () => {
   const deleteMutation = useMutation({
     mutationFn: (id: string) =>
       adminBatchService.deleteBatch(id),
-    onSuccess: () => setDeleteId(null),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["admin-batches"],
+      })
+      setDeleteId(null)
+    },
   })
 
   const batches = data?.data || []
@@ -35,9 +38,7 @@ const Batches = () => {
   return (
     <section className="p-6 space-y-6!">
       <div className="flex justify-between">
-        <h1 className="text-3xl font-semibold">
-          Batches
-        </h1>
+        <h1 className="text-3xl font-semibold">Batches</h1>
 
         <button
           className="btn-primary"
@@ -52,11 +53,12 @@ const Batches = () => {
           <thead className="bg-white/5">
             <tr>
               <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">Subcategory</th>
               <th className="px-4 py-3">Instructor</th>
               <th className="px-4 py-3">Duration</th>
-              <th className="px-4 py-3 text-right">
-                Actions
-              </th>
+              <th className="px-4 py-3">Start Time</th>
+              <th className="px-4 py-3">End Time</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
 
@@ -66,39 +68,48 @@ const Batches = () => {
                 key={b._id}
                 className="border-t border-white/5 hover:bg-white/5"
               >
-                <td className="px-4 py-3 font-medium">
-                  {b.name}
+                <td className="px-4 py-3 font-medium">{b.name}</td>
+
+                <td className="px-4 py-3 text-white/70">
+                  {b.subcategoryId?.name}
                 </td>
+
                 <td className="px-4 py-3">
                   {b.assignedInstructor?.name}
                 </td>
+
                 <td className="px-4 py-3 text-white/60">
                   {new Date(b.startDate).toLocaleDateString()} →{" "}
                   {new Date(b.endDate).toLocaleDateString()}
                 </td>
 
+                <td className="px-4 py-3 text-white/60">
+                  {b.startTime}
+                </td>
+
+                <td className="px-4 py-3 text-white/60">
+                  {b.endTime}
+                </td>
+
                 <td className="px-4 py-3 text-right space-x-3!">
                   <Link
                     to={`/admin/batches/${b._id}`}
-                    className="text-violet-400 hover:underline cursor-pointer"
+                    className="text-violet-400 hover:underline"
                   >
                     View
                   </Link>
 
                   <button
-                    className="text-blue-400 hover:underline cursor-pointer"
+                    className="text-blue-400 hover:underline"
                     onClick={() =>
-                      setDialog({
-                        type: "edit",
-                        batch: b,
-                      })
+                      setDialog({ type: "edit", batch: b })
                     }
                   >
                     Edit
                   </button>
 
                   <button
-                    className="text-red-400 hover:underline cursor-pointer"
+                    className="text-red-400 hover:underline"
                     onClick={() => setDeleteId(b._id)}
                   >
                     Delete
@@ -112,7 +123,7 @@ const Batches = () => {
 
       {dialog && (
         <BatchDialog
-          open={!!dialog}
+          open
           mode={dialog.type}
           batch={dialog.batch}
           onClose={() => setDialog(null)}
@@ -121,9 +132,9 @@ const Batches = () => {
 
       {deleteId && (
         <ConfirmDeleteAlert
-          open={!!deleteId}
+          open
           title="Delete Batch?"
-          description="All associated classes will remain but this batch will be removed."
+          description="This will permanently delete the batch."
           onCancel={() => setDeleteId(null)}
           onConfirm={() =>
             deleteMutation.mutate(deleteId)

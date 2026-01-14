@@ -1,5 +1,6 @@
 import AdminLayout from "@/pages/admin/AdminLayout"
 import AdminManagement from "@/pages/admin/AdminManagement"
+import BatchDetails from "@/pages/admin/BatchDetails"
 import Batches from "@/pages/admin/Batches"
 import CareerSupport from "@/pages/admin/CareerSupport"
 import Categories from "@/pages/admin/Categories"
@@ -8,6 +9,7 @@ import Instructors from "@/pages/admin/Instructors"
 import JobApplications from "@/pages/admin/JobApplications"
 import MissedClasses from "@/pages/admin/MissedClasses"
 import StudentManagement from "@/pages/admin/StudentManagement"
+import { Component } from "lucide-react"
 
 export const adminAppRoute = {
   path: "admin",
@@ -20,6 +22,7 @@ export const adminAppRoute = {
     { path: "career-support", Component: CareerSupport },
     { path: "instructors", Component: Instructors },
     { path: "batches", Component: Batches },
+    { path: "batches/:batchId", Component: BatchDetails },
     { path: "categories", Component: Categories },
     { path: "missed-classes", Component: MissedClasses },
   ],

@@ -102,6 +102,20 @@ export const adminBatchService = {
   deleteBatch: (id: string) => {
     return api.delete(`/api/batches/${id}`)
   },
+
+
+  // Schedule Meeting for liveClass
+
+  scheduleMeeting: (payload: {
+    liveClassId: string
+    topic: string
+  }) => {
+    return api.post(
+      "/api/batches/live-classes/schedule-meeting",
+      payload
+    )
+  },
+
 }
 
 
