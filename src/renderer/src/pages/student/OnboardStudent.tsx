@@ -240,11 +240,11 @@ const OnboardStudent = () => {
   };
 
 
-  
+
   const handleLogout = async () => {
     const logoutRes = await logout()
 
-      console.log("logout", logoutRes)
+    console.log("logout", logoutRes)
     // navigate("/signin", {replace: true})
   }
 
@@ -311,52 +311,40 @@ const OnboardStudent = () => {
             transition={{ duration: 0.5 }}
           >
             <label htmlFor="dob" className="font-[500]!">
-              Date of Birth:
+              Date of Birth: <span className="text-red-500">*</span>
             </label>
 
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-left
-              bg-slate-700 border-2 border-violet-300 text-[var(--ev-c-white-soft)]
-              text-[1.05rem] rounded px-3! h-12! shadow-xs
+            <input
+              type="date"
+              id="dob"
+              value={watch("dob")}
+              onChange={(e) =>
+                setValue("dob", e.target.value, {
+                  shouldValidate: true,
+                })
+              }
+              min="1900-01-01"
+              max={format(MIN_AGE_DATE, "yyyy-MM-dd")}
+              className="
+              bg-slate-700 border-2 border-violet-300
+              text-[var(--ev-c-white-soft)]
+              text-[1.05rem]
+              rounded-[8px] block w-full px-3 py-2.5 h-12
+              shadow-xs
               placeholder:text-slate-300
-              relative
-              "
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {watch("dob")
-                    ? watch("dob")
-                    : "Select Date of Birth"}
-                </Button>
-              </PopoverTrigger>
+              [color-scheme:dark]
+              [&::-webkit-calendar-picker-indicator]:invert
+              [&::-webkit-calendar-picker-indicator]:opacity-70
+            "
+                    />
 
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={
-                    watch("dob")
-                      ? new Date(watch("dob"))
-                      : undefined
-                  }
-                  defaultMonth={MIN_AGE_DATE}
-                  onSelect={(date) => {
-                    if (!date) return;
-
-                    setValue(
-                      "dob",
-                      format(date, "yyyy-MM-dd"),
-                      { shouldValidate: true }
-                    );
-                  }}
-                  disabled={(date) =>
-                    date > MIN_AGE_DATE || date < new Date("1900-01-01")
-                  }
-                />
-              </PopoverContent>
-            </Popover>
+            {errors.dob && (
+              <p className="text-sm text-red-500">
+                {errors.dob.message}
+              </p>
+            )}
           </motion.div>
+
 
 
           <motion.div

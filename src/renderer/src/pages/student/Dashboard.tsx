@@ -33,6 +33,7 @@ const Dashboard = () => {
   const { user } = useAuth();
 
   const { data, isLoading, isError } = useStudentDashboard();
+
   const {
     data: careerAppData,
     isLoading: isCareerAppLoading,
@@ -68,6 +69,7 @@ const Dashboard = () => {
   const { summary, subscriptions } = data.data;
   const careerSupport = summary?.careerSupport;
   const hasCareerSupport = careerSupport?.enabled === true;
+  const isProfileSubmitted = careerSupport?.isProfileSubmitted
 
   const applications = careerAppData?.data ?? [];
 
@@ -163,19 +165,19 @@ const Dashboard = () => {
                   <p className="opacity-80!">Loading career support status…</p>
                 ) : existingApplication ? (
                   <div className="space-y-2!">
-                    <p className="text-lg! opacity-90!">
+                    <p className="text-xl!">
                       ✅ Your profile has been submitted.
                     </p>
-                    <p className="text-base! opacity-80!">
+                    <p className="text-xl!">
                       Our team will contact you shortly.
                     </p>
                   </div>
-                ) : (
+                ) : !isProfileSubmitted ? (
                   <>
-                    <p className="text-lg! opacity-90!">
+                    <p className="text-xl!">
                       Thanks for choosing career support.
                       Please submit your resume and our team will get back to you
-                      within <strong>48 hours</strong>.
+                      within <strong className="font-semibold!">48 hours</strong>.
                     </p>
 
                     <button
@@ -186,6 +188,13 @@ const Dashboard = () => {
                         Apply for Career Support
                       </span>
                     </button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-lg!">
+                      Thanks for submitting your profile and our team will get back to you
+                      within <strong className="font-semibold!">48 hours</strong>.
+                    </p>
                   </>
                 )}
               </div>

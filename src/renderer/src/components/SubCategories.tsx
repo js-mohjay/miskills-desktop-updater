@@ -162,10 +162,10 @@ export default function SubCategories({ category, onBack }: Props) {
             setIsCreatingOrder(false)
           }
           }
-          className="group flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+          className="group flex items-center gap-2 text-white/80 hover:text-white transition-colors"
         >
-          <MoveLeft className="size-6 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-lg font-semibold">Back</span>
+          <MoveLeft className="size-7 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-xl font-semibold">Back</span>
         </button>
       </div>
 
@@ -176,7 +176,7 @@ export default function SubCategories({ category, onBack }: Props) {
             {/*<div className="card__border w-full h-full"></div>*/}
             <div className="card_title__container text-center py-8 px-6">
               <h1
-                className="text-5xl font-bold mb-4 bg-gradient-to-r from-violet-100 to-white bg-clip-text text-transparent">
+                className="text-5xl font-bold mb-4 text-white">
                 {category?.name}
               </h1>
             </div>

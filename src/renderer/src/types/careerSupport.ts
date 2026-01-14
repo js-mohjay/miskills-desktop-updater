@@ -4,6 +4,7 @@ export interface CareerSupportSummary {
   totalInterviews: number;
   usedInterviews: number;
   remainingInterviews: number;
+  isProfileSubmitted: boolean;
 }
 
 export interface CareerSupportApplication {

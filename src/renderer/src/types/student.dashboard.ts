@@ -10,6 +10,7 @@ export interface StudentDashboardResponse {
       avgDaysRemaining: number;
       totalTimeFormatted: string;
       careerSupport?: CareerSupportSummary;
+      showRenewBanner?: boolean;
     };
     subscriptions: StudentSubscription[];
   };
