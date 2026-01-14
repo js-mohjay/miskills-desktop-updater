@@ -10,6 +10,8 @@ import { useForm } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import { adminBatchService } from "@/services/admin.service"
 import { Loader } from "lucide-react"
+import { toast } from "sonner"
+import { AxiosError } from "axios"
 
 type Props = {
     open: boolean
@@ -30,11 +32,24 @@ export default function ScheduleMeetingDialog({
         mutationFn: (payload: {
             liveClassId: string
             topic: string
-        }) =>
-            adminBatchService.scheduleMeeting(payload),
-        onSuccess: onClose,
-    })
+        }) => adminBatchService.scheduleMeeting(payload),
 
+        onSuccess: (res: any) => {
+            toast.success(
+                res?.data?.message || "Meeting scheduled successfully"
+            )
+            onClose()
+        },
+
+        onError: (error) => {
+            const err = error as AxiosError<any>
+
+            toast.error(
+                err.response?.data?.message ||
+                "Failed to schedule meeting. Please try again."
+            )
+        },
+    })
     return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-md bg-black border border-violet-500/30">

@@ -40,6 +40,8 @@ export default function BatchDetails() {
                             <th className="px-4 py-3">S.No</th>
                             <th className="px-4 py-3">Day</th>
                             <th className="px-4 py-3">Date</th>
+                            <th className="px-4 py-3">Start Time</th>
+                            <th className="px-4 py-3">End Time</th>
                             <th className="px-4 py-3">Instructor</th>
                             <th className="px-4 py-3">Status</th>
                             <th className="px-4 py-3 text-right">
@@ -62,6 +64,14 @@ export default function BatchDetails() {
                                 </td>
                                 <td className="px-4 py-3">
                                     {new Date(c.date).toLocaleDateString()}
+                                </td>
+
+                                <td className="px-4 py-3">
+                                    {new Date(c.startDateTime).toLocaleTimeString("en-IN")}
+                                </td>
+
+                                <td className="px-4 py-3">
+                                    {new Date(c.endDateTime).toLocaleTimeString("en-IN")}
                                 </td>
                                 <td className="px-4 py-3">
                                     {c.conductedByInstructor?.name}

@@ -96,7 +96,7 @@ const Batches = () => {
                     to={`/admin/batches/${b._id}`}
                     className="text-violet-400 hover:underline"
                   >
-                    View
+                    View Classes
                   </Link>
 
                   <button
@@ -108,12 +108,12 @@ const Batches = () => {
                     Edit
                   </button>
 
-                  <button
+                  {/* <button
                     className="text-red-400 hover:underline"
                     onClick={() => setDeleteId(b._id)}
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}

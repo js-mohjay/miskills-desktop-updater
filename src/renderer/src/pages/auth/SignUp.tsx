@@ -32,6 +32,9 @@ const SignIn = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [canEditIdentifier, setCanEditIdentifier] = useState(true);
 
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false)
+
+
   let navigate = useNavigate()
 
   const dynamicSchema = isOtpSent
@@ -59,12 +62,12 @@ const SignIn = () => {
   });
 
 
-type signupPayload = {
-  name: string,
-  phoneNumber: string,
-  role: "student",
-  deviceToken: string,
-}
+  type signupPayload = {
+    name: string,
+    phoneNumber: string,
+    role: "student",
+    deviceToken: string,
+  }
 
 
   const signupMutation = useMutation({
@@ -104,7 +107,7 @@ type signupPayload = {
 
       requestAnimationFrame(() => {
         // navigate("/", { replace: true });
-        navigate("/onboard", {replace: true})
+        navigate("/onboard", { replace: true })
         // if (d.user.role === "admin") navigate("/admin", {replace: true});
         // else if (d.user.role === "student") navigate("/student", {replace: true});
         // else if (d.user.role === "training") navigate("/training", {replace: true});
@@ -127,7 +130,7 @@ type signupPayload = {
   });
 
   const handleSignupAndSendOTP = (data: FormData) => {
-    signupMutation.mutate({name: data.name, phoneNumber: data.phoneNumber, role: "student", deviceToken: ""});
+    signupMutation.mutate({ name: data.name, phoneNumber: data.phoneNumber, role: "student", deviceToken: "" });
   };
 
 
@@ -295,15 +298,47 @@ type signupPayload = {
           </motion.div>
         )}
 
-        {/* BUTTON */}
-        <motion.button
-          type="submit"
-          className="btn-primary w-full!"
+
+        {/* TERMS & CONDITIONS CHECKBOX */}
+        <motion.div
+          className="w-full max-w-sm flex items-start gap-2 text-sm text-white/80"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <span>
+          <input
+            type="checkbox"
+            id="terms"
+            checked={hasAcceptedTerms}
+            onChange={(e) => setHasAcceptedTerms(e.target.checked)}
+            className="mt-0.5! w-4 h-4 accent-violet-500 cursor-pointer"
+          />
+
+          <label htmlFor="terms" className="cursor-pointer">
+            I agree to the{" "}
+            <a
+              href="https://miskills.in/terms-and-conditions"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-violet-400 hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Terms & Conditions
+            </a>
+          </label>
+        </motion.div>
+
+
+        {/* BUTTON */}
+        <motion.button
+          type="submit"
+          disabled={!hasAcceptedTerms}
+          className={`${!hasAcceptedTerms && "bg-gray-800! cursor-not-allowed!"} btn-primary w-full! `}
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className={`${!hasAcceptedTerms && "bg-gray-800! opacity-50"}`}>
             {(signupMutation.isPending || verifySignupOtpMutation.isPending) ? (
               <LoaderIcon size={32} className="animate-spin" />
             ) : (
