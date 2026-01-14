@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, useLocation } from "react-router"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { attendanceService } from "@/services/attendance.service"
 import { batchService } from "@/services/batch.service"
 import { toast } from "sonner"
@@ -18,6 +18,9 @@ export default function LearningDetails() {
   const subscriptionId = location.state?.subscriptionId
 
   const [selectedBatch, setSelectedBatch] = useState<any>(null)
+
+  const queryClient = useQueryClient()
+
 
   /* ---------------------------- Attendance API ---------------------------- */
 
@@ -60,14 +63,27 @@ export default function LearningDetails() {
 
   const enrollMutation = useMutation({
     mutationFn: batchService.enrollInBatch,
+
     onSuccess: () => {
       toast.success("Batch enrolled successfully")
       setSelectedBatch(null)
+
+      // 🔁 Refetch attendance (this will switch UI to attendance view)
+      queryClient.invalidateQueries({
+        queryKey: ["attendance", subcategoryId],
+      })
+
+      // 🔁 Optional: refetch active batches list
+      queryClient.invalidateQueries({
+        queryKey: ["active-batches", subcategoryId],
+      })
     },
+
     onError: () => {
-      toast.error("Failed to enroll in batch")
+      toast.error("Failed to enroll in batch, Please try again later or contact Support.")
     },
   })
+
 
   /* -------------------------------------------------------------------------- */
 

@@ -1,11 +1,12 @@
 import { useAuth } from "@/store/auth/useAuthStore";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { studentService } from "@/services/student.service";
 import { StudentDashboardResponse } from "@/types/student.dashboard";
 import { StatCard } from "@/components/cards/StatCard";
 import { Video, Upload, Briefcase, RefreshCcw } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const useStudentDashboard = () => {
   return useQuery<StudentDashboardResponse>({
@@ -34,6 +35,9 @@ const Dashboard = () => {
 
   const { data, isLoading, isError } = useStudentDashboard();
 
+  const queryClient = useQueryClient();
+
+
   const {
     data: careerAppData,
     isLoading: isCareerAppLoading,
@@ -47,8 +51,17 @@ const Dashboard = () => {
     },
     onSuccess: () => {
       setOpenDialog(false);
+
+      // 🔁 Refetch dashboard data
+      queryClient.invalidateQueries({
+        queryKey: ["student-dashboard"],
+      });
+
+      // Optional UX feedback
+      toast.success("Career support profile submitted successfully");
     },
   });
+
 
   if (isLoading) {
     return (
