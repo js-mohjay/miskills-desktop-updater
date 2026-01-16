@@ -1,34 +1,43 @@
 <!DOCTYPE html>
 <html>
-  <body
-    style="
+
+<style>
+  @font-face {
+    font-family: "Poppins";
+    src: url("../src/assets/fonts/Poppins/Poppins-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+</style>
+
+<body style="
       background: #0f0f14;
       color: white;
-      font-family: system-ui, sans-serif;
+      font-family: 'Poppins',system-ui, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-    "
-  >
-    <h3 id="status">Checking for updates…</h3>
+      gap: 10px;
+      padding: 10px;
+    ">
+  <div>
+    <img src="./logo-white.png" alt="MISKILLS LOGO" style="width: 200px;">
+  </div>
+  <h3 id="status">Checking for updates…</h3>
 
-    <progress
-      id="bar"
-      value="0"
-      max="100"
-      style="width: 90%; height: 16px"
-    ></progress>
+  <progress id="bar" value="0" max="100" style="width: 90%; height: 10px; background-color: #6628e2 !important"></progress>
 
-    <script>
-      window.updater.onStatus((msg) => {
-        document.getElementById("status").innerText = msg
-      })
+  <script>
+    window.updater.onStatus((msg) => {
+      document.getElementById("status").innerText = msg
+    })
 
-      window.updater.onProgress((p) => {
-        document.getElementById("bar").value = p
-      })
-    </script>
-  </body>
+    window.updater.onProgress((p) => {
+      document.getElementById("bar").value = p
+    })
+  </script>
+</body>
+
 </html>

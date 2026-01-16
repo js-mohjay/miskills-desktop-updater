@@ -51,11 +51,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ socket, scheduleId, occurrenceId 
   };
 
   return (
-    <div className="flex flex-col bg-gray-700 rounded p-2 h-96">
+    <div className="flex flex-col bg-zinc-800 rounded p-2 h-full!">
       <div className="flex-1 overflow-auto mb-2">
         {messages.map((msg, idx) => (
           <div key={idx} className="py-1">
-            <span className="font-semibold text-white">{msg.senderName}:</span>{" "}
+            <span className="font-semibold text-white!">{msg.senderName}:</span>{" "}
             <span className="text-gray-200">{msg.text}</span>
           </div>
         ))}
@@ -63,14 +63,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ socket, scheduleId, occurrenceId 
       </div>
       <div className="flex">
         <input
-          className="flex-1 rounded-l p-2 text-black"
+          className="flex-1 rounded-l p-2 text-white! border"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
         />
         <button
           onClick={sendMessage}
-          className="bg-green-600 hover:bg-green-700 rounded-r px-4 text-white"
+          className="bg-green-600! border border-green-600 hover:bg-green-700! rounded-r px-4 text-white!"
         >
           Send
         </button>

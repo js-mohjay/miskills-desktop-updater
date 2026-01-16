@@ -18,7 +18,7 @@ export default function InterviewProgressDialog({
       <DialogContent className="rounded-[8px] max-w-md bg-[#0f1117] border border-white/10">
         <DialogHeader>
           <DialogTitle className="text-white">
-            {interview.company}
+            Company: {interview.company}
           </DialogTitle>
         </DialogHeader>
 

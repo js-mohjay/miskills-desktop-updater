@@ -35,7 +35,7 @@ export function initAutoUpdater({
   autoUpdater.on("update-available", () => {
     // 🔥 MANDATORY UPDATE TRIGGER
     updateIsMandatory = true
-    sendStatus("Import update found. Downloading…Please don't close this window.")
+    sendStatus("Import update found. Downloading…<br/>Please don't close this window.")
   })
 
   autoUpdater.on("update-not-available", () => {

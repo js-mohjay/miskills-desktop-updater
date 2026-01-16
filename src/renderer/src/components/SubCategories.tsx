@@ -256,9 +256,7 @@ export default function SubCategories({ category, onBack }: Props) {
                       </div>
 
                       <hr className="line opacity-20" />
-
                       <div className="p-6! flex items-center gap-2">
-
                         {/* MONTHLY OPTION (only if available) */}
                         {sub.billingType === "MONTHLY" && sub.monthlyPrice && (
                           <label
@@ -360,7 +358,7 @@ export default function SubCategories({ category, onBack }: Props) {
                           `}
                         >
                           <span className="px-5! py-2! max-h-[98%]">
-                            {isSubscribed ? "Subscribed" : isInCart(sub._id) ? "Selected" : "Add to Cart"}
+                            {isSubscribed ? "Subscribed" : isInCart(sub._id) ? "Selected" : "Select"}
                           </span>
                         </button>
 
@@ -526,7 +524,7 @@ export default function SubCategories({ category, onBack }: Props) {
                           }
                         `}
                       >
-                        <span>{isSubscribed ? "Subscribed" : isInCart(sub._id) ? "Selected" : "Select Plan"}</span>
+                        <span>{isSubscribed ? "Subscribed" : isInCart(sub._id) ? "Selected" : "Select"}</span>
                       </button>
 
 

@@ -109,7 +109,7 @@ const sidebarData = {
       icon: Home,
     },
     {
-      name: "Courses",
+      name: "Subscription Plans",
       url: "/student/courses",
       icon: Library,
     },

@@ -9,3 +9,13 @@ export function normalizeVideoCallingRole(role: string | null): VideoCallingRole
 
   return "participant";
 }
+
+
+export const getRole = (metadata?: string) => {
+  if (!metadata) return null;
+  try {
+    return JSON.parse(metadata)?.role;
+  } catch {
+    return null;
+  }
+};

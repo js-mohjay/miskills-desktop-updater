@@ -9,24 +9,25 @@ const HostControls = () => {
 
   return (
     <div className="flex gap-3">
-      <TrackToggle source={Track.Source.Microphone} className="btn-primary">
+      <TrackToggle source={Track.Source.Microphone} className="bg-zinc-600 hover:bg-zinc-700 cursor-pointer">
         <span>Mic</span>
       </TrackToggle>
 
-      <TrackToggle source={Track.Source.Camera} className="btn-primary">
+      {/* <TrackToggle source={Track.Source.Camera} className="bg-zinc-600 hover:bg-zinc-700 cursor-pointer">
         <span>Camera</span>
-      </TrackToggle>
+      </TrackToggle> */}
 
-      <TrackToggle source={Track.Source.ScreenShare} className="btn-primary">
+      <TrackToggle source={Track.Source.ScreenShare} className="bg-zinc-600 hover:bg-zinc-700 cursor-pointer">
         <span>Share</span>
       </TrackToggle>
 
       <button
-        className="btn-danger"
+        className="px-4! py-2! rounded-[8px] bg-red-500 hover:bg-red-600 cursor-pointer"
         onClick={() => socket?.emit("endRoom")}
       >
-        <span>End</span>
+        <span>End Meeting</span>
       </button>
+
     </div>
   );
 };

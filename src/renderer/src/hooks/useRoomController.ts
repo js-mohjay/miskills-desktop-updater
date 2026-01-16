@@ -5,6 +5,7 @@ import { useSocketStore } from "@/store/useSocketStore";
 import { useRoomStore } from "@/store/useRoomStore";
 import { useAuth } from "@/store/auth/useAuthStore";
 import { toast } from "sonner";
+import { useUnmuteStore } from "@/store/useUnmuteStore";
 
 interface JoinRoomPayload {
   scheduleId: string;
@@ -23,6 +24,9 @@ export function useRoomController({
     setLivekitAuth,
     resetRoom,
   } = useRoomStore();
+
+  const { setApproved, setRequested } = useUnmuteStore();
+
 
   const joinedRef = useRef(false);
 
@@ -43,12 +47,28 @@ export function useRoomController({
 
 
     const onJoinDenied = (payload: any) => {
-      toast.error(payload?.reason || "Unable to join meeting");
+      toast.error(`${payload?.reason} 123` || "Unable to join meeting");
     };
 
     const onError = (err: any) => {
-      toast.error(err?.message || "Socket error");
+      toast.error(`${err?.message} 123` || "Socket error");
     };
+
+
+    const onUnmuteGranted = () => {
+      setApproved(true);
+      setRequested(false);
+      toast.success("You are allowed to unmute 🎤");
+    };
+
+    const onUnmuteRejected = () => {
+      setRequested(false);
+      toast.error("Unmute request rejected");
+    };
+
+    socket.on("unmuteGranted", onUnmuteGranted);
+    socket.on("unmuteRejected", onUnmuteRejected);
+
 
     socket.on("livekit-auth", onLivekitAuth);
     socket.on("joinDenied", onJoinDenied);
@@ -58,6 +78,8 @@ export function useRoomController({
       socket.off("livekit-auth", onLivekitAuth);
       socket.off("joinDenied", onJoinDenied);
       socket.off("error", onError);
+      socket.off("unmuteGranted", onUnmuteGranted);
+      socket.off("unmuteRejected", onUnmuteRejected);
     };
   }, [socket, setLivekitAuth, setRole]);
 

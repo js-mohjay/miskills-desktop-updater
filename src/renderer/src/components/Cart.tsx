@@ -137,14 +137,14 @@ export default function Cart() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <ShoppingCart className="size-10 text-violet-300" />
-        <h2 className="text-3xl font-bold text-white">Your Cart</h2>
+        <h2 className="text-3xl font-bold text-white">Your Selection:</h2>
       </div>
 
       {/* Items */}
       <div className="flex-1 overflow-y-auto space-y-2 py-4">
         {!hasItems && (
           <div className="text-center py-12 text-white/50">
-            <p className="text-sm">No items in cart</p>
+            <p className="text-sm">No items Selected</p>
             <p className="text-xs mt-2">Select a plan to get started</p>
           </div>
         )}
@@ -189,14 +189,14 @@ export default function Cart() {
             </span>
           </div>
 
-          <div className="flex justify-between text-xl mb-2!">
+          <div className="flex justify-between text-xl mb-4!">
             <span className="text-white/80">Tax (18%)</span>
             <span className="text-white font-semibold">
               ₹ {tax().toLocaleString("en-IN")}
             </span>
           </div>
 
-          <div className="border-t border-white/10 pt-2 flex justify-between">
+          <div className="border-t border-white/10 pt-4! flex justify-between">
             <span className="text-2xl font-bold text-white">Total</span>
             <span className="text-3xl font-semibold text-white">
               ₹ {total().toLocaleString("en-IN")}
@@ -208,10 +208,10 @@ export default function Cart() {
         <button
           disabled={!hasItems || isCreatingOrder}
           onClick={handleCheckout}
-          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 disabled:opacity-50 py-3 rounded-[8px] text-white font-semibold mt-2!"
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700! hover:to-purple-700 disabled:opacity-50 py-3 rounded-[8px] text-white font-semibold mt-4! cursor-pointer transition duration-300"
         >
           {isCreatingOrder && <Loader2 className="size-5 animate-spin" />}
-          {isCreatingOrder ? "Waiting for payment..." : "Proceed to Checkout"}
+          {isCreatingOrder ? "Waiting for payment..." : "Proceed to Payment"}
         </button>
       </div>
     </div>

@@ -4,14 +4,19 @@
 import { Outlet } from "react-router";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { Video } from "lucide-react";
+import { FileText, Video } from "lucide-react";
 
 const instructorSidebarData = {
   navNonCollapsable: [
     {
       name: "Meetings",
-      url: "/instructor/meetings",
+      url: "/instructor",
       icon: Video,
+    },
+    {
+      name: "Notes",
+      url: "/instructor/notes",
+      icon: FileText,
     },
   ],
 };

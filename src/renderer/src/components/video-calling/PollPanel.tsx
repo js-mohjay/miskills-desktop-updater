@@ -61,7 +61,7 @@ const PollPanel: React.FC<PollPanelProps> = ({ socket, scheduleId, occurrenceId 
   };
 
   return (
-    <div className="bg-gray-700 rounded p-2 space-y-2">
+    <div className="bg-zinc-800 rounded p-2! space-y-2!  h-full!">
       <h3 className="text-white font-semibold mb-2">Polls</h3>
       {polls.length === 0 && <p className="text-gray-300">No polls yet</p>}
       {polls.map((poll) => (

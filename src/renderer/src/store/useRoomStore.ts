@@ -56,6 +56,12 @@ interface RoomState {
     url: string | null;
   };
 
+  scheduleId: string;
+  occurrenceId: string;
+
+  setScheduleId: (val: string) => void;
+  setOccurrenceId: (val: string) => void;
+
   /* -------- CHAT -------- */
   messages: ChatMessage[];
 
@@ -102,6 +108,13 @@ export const useRoomStore = create<RoomState>((set, get) => ({
     token: null,
     url: null,
   },
+
+
+  scheduleId: "",
+  occurrenceId: "",
+
+  setScheduleId: (val) => set({scheduleId: val}),
+  setOccurrenceId: (val) => set({occurrenceId: val}),
 
   messages: [],
 

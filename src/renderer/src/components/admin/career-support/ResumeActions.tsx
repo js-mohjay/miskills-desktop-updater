@@ -1,7 +1,11 @@
-import { FileText, Download } from "lucide-react";
+import PdfViewerDialog from "@/components/common/PdfViewerDialog";
+import { useState } from "react";
 
 export default function ResumeActions({ url }: { url: string }) {
   const fullUrl = import.meta.env.VITE_BACKEND_BASE_URL + url;
+
+  const [open, setOpen] = useState(false)
+
 
   return (
     <div className="flex gap-3">
@@ -14,14 +18,20 @@ export default function ResumeActions({ url }: { url: string }) {
         View
       </a> */}
 
-      <a
-        href={fullUrl}
-        download
+
+      <PdfViewerDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        pdfUrl={fullUrl}
+      />
+
+
+      <button
+        onClick={() => setOpen(true)}
         className="flex items-center gap-1 text-green-400 hover:underline"
       >
-        <Download size={16} />
-        Download
-      </a>
+        View Resume
+      </button>
     </div>
   );
 }

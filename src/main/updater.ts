@@ -9,8 +9,8 @@ let updaterWindow: BrowserWindow | null = null
 // ================================
 export function createUpdaterWindow() {
   updaterWindow = new BrowserWindow({
-    width: 420,
-    height: 220,
+    width: 600,
+    height: 400,
     resizable: false,
     minimizable: false,
     maximizable: false,

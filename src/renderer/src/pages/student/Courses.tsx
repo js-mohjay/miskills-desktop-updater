@@ -18,7 +18,7 @@ import { useAuth } from "@/store/auth/useAuthStore";
 
 const Courses = () => {
 
-  const {selectedCategory, setSelectedCategory} = useAuth()
+  const { selectedCategory, setSelectedCategory } = useAuth()
 
   const { data, error, isLoading } = useQuery<Category[], AxiosError>({
     queryKey: ["categories"],
@@ -47,7 +47,7 @@ const Courses = () => {
   return (
     <section className={"w-full min-h-screen overflow-auto p-10 space-y-6!"}>
       <div>
-        <h1 className={"text-5xl leading-tight"}>Courses</h1>
+        <h1 className={"text-5xl leading-tight"}>Subscription Plans</h1>
         <h3 className={"text-lg pl-1"}>Subscribe & Learn as per your choice</h3>
       </div>
       <div className={""}>
@@ -71,6 +71,19 @@ const Courses = () => {
                     <ChevronRight className={"size-6 absolute top-1/2 -translate-y-1/2 right-0"} />
                   </div>
                 ))}
+                <div
+                  className={"relative card-secondary border border-white/30 hover:bg-violet-500! transition-all! duration-300! cursor-pointer"}
+                >
+                  <div className={"flex flex-col gap-2"}>
+                    <h2 className={"text-2xl"}>
+                      {"Business Funding"}
+                    </h2>
+                    <h4 className={"text-base font-light!"}>
+                      {"Coming Soon"}
+                    </h4>
+                  </div>
+                  {/* <ChevronRight className={"size-6 absolute top-1/2 -translate-y-1/2 right-0"} /> */}
+                </div>
               </div>
               <div className={"p-2"}>
                 <img src={studentJourney} alt="" className={"w-full! h-full! rounded-[8px]! border border-white/50"} />
